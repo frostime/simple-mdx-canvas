@@ -89,7 +89,7 @@ Math support is enabled by default through `remark-math`, `rehype-katex`, and em
 - `Tabs` / `Tab`
 - `Steps` / `Step`
 - `Figure`
-- `PromptBox`
+- `PromptBox` — copy-oriented prompt block; long text and fenced code wrap by default
 
 ## Example
 

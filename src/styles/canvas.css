@@ -65,6 +65,31 @@ code {
   color: var(--bulma-code);
 }
 
+/* PromptBox is for prompts, commands, and agent instructions.
+   It must wrap long text instead of forcing horizontal page overflow. */
+.prompt-box-content {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.prompt-box-content :where(p, li, blockquote, strong, em, span) {
+  overflow-wrap: anywhere;
+}
+
+.prompt-box-content :where(pre, code) {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.prompt-box-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-family: var(--bulma-family-monospace);
+}
+
 @media (max-width: 768px) {
   .canvas-page {
     padding-top: 2rem;

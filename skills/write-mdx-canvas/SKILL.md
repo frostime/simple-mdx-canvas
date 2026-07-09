@@ -72,7 +72,7 @@ Use these built-ins when appropriate:
 - `Tabs` / `Tab` for alternate platforms, modes, or variants;
 - `Steps` / `Step` for procedures and workflows;
 - `Figure` for image plus caption/source/note;
-- `PromptBox` for reusable prompts, commands, or agent instructions.
+- `PromptBox` for reusable prompts, commands, or agent instructions; use fenced text or the `text` prop for long prompts, and rely on default wrapping.
 
 ## Chart Rule
 

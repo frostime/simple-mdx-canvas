@@ -152,7 +152,7 @@ MVP components:
 - `Tabs` / `Tab` — Bulma tabs markup with a minimal static-page switcher
 - `Steps` / `Step`
 - `Figure`
-- `PromptBox`
+- `PromptBox` — copy-oriented block for prompts, commands, and agent instructions; text must wrap by default
 
 The component set is deliberately small. Markdown remains the default representation; components are used only where they improve structure, visualization, or presentation value.
 
