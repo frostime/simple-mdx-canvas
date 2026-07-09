@@ -1,0 +1,52 @@
+{
+  "name": "simple-mdx-canvas",
+  "version": "0.1.0",
+  "description": "Agent-facing single-page MDX canvas renderer: GFM Markdown plus controlled visual components to HTML.",
+  "type": "module",
+  "bin": {
+    "simple-mdx-canvas": "./dist/cli.js",
+    "smc": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "docs",
+    "examples",
+    "templates",
+    "skills",
+    "README.md",
+    "SPEC.md",
+    "DESIGN.md"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "dev": "tsx src/cli.ts",
+    "validate:example": "node dist/cli.js validate examples/report.mdx",
+    "render:example": "node dist/cli.js render examples/report.mdx -o examples/report.html",
+    "serve:example": "node dist/cli.js serve examples/report.mdx --port 4321",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build",
+    "clean": "node scripts/clean.mjs"
+  },
+  "dependencies": {
+    "@mdx-js/mdx": "^3.1.0",
+    "bulma": "^1.0.4",
+    "commander": "^12.1.0",
+    "gray-matter": "^4.0.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "remark-gfm": "^4.0.1",
+    "zod": "^3.25.76",
+    "chart.js": "^4.4.9"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

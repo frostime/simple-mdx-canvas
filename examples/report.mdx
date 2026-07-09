@@ -1,0 +1,134 @@
+---
+title: "simple-mdx-canvas Example Report"
+description: "A single-page MDX canvas generated from Markdown plus Bulma-based components."
+theme: "academic"
+---
+
+# simple-mdx-canvas Example Report
+
+<Callout type="note" title="Core idea">
+`simple-mdx-canvas` turns an agent-written Markdown document into a Bulma-styled HTML canvas without requiring a full frontend project.
+</Callout>
+
+<Tags>
+<Tag color="primary" light>MDX</Tag>
+<Tag color="success" light>Bulma</Tag>
+<Tag color="info" light>Single HTML</Tag>
+</Tags>
+
+## Why this exists
+
+Plain Markdown is portable, but it is weak at visual comparison, guided reading, and report-style presentation. A full React app is too heavy for a one-off agent artifact.
+
+<Columns cols={2}>
+<Column title="Plain Markdown">
+
+- Low cost
+- Easy to diff
+- Weak visual structure
+- No controlled components
+
+</Column>
+<Column title="MDX Canvas">
+
+- Still text-first
+- Adds visual components
+- Generates direct HTML
+- Agent can validate and repair
+
+</Column>
+</Columns>
+
+## Component surface
+
+<Grid columns={3}>
+<Cell>
+<Callout type="tip" title="Layout">
+Use `Columns` for simple prose comparison and `Grid` for denser card-like regions.
+</Callout>
+</Cell>
+<Cell>
+<Callout type="definition" title="Data">
+Use `Table` for JSON-backed tabular data and GFM tables for ordinary prose tables.
+</Callout>
+</Cell>
+<Cell>
+<Callout type="warning" title="Escape hatch">
+Use raw Bulma HTML only when a semantic component does not exist yet.
+</Callout>
+</Cell>
+</Grid>
+
+<Table
+  columns='["component", "purpose", "basis"]'
+  data='[
+    { "component": "Chart", "purpose": "Visualize numeric data", "basis": "Chart.js" },
+    { "component": "Table", "purpose": "Show structured rows", "basis": "Bulma table" },
+    { "component": "Tag", "purpose": "Compact labels", "basis": "Bulma tag" },
+    { "component": "Grid", "purpose": "Dense layout", "basis": "Bulma grid" }
+  ]'
+/>
+
+## Complexity comparison
+
+<Chart
+  type="bar"
+  title="Output path complexity"
+  description="Illustrative scale: lower is simpler."
+  x="path"
+  y="complexity"
+  data='[
+    { "path": "Markdown", "complexity": 1 },
+    { "path": "MDX Canvas", "complexity": 3 },
+    { "path": "Document site", "complexity": 7 },
+    { "path": "Full React app", "complexity": 9 }
+  ]'
+/>
+
+## Runtime behavior
+
+<Tabs>
+<Tab title="Render">
+
+```bash
+smc render examples/report.mdx -o examples/report.html
+```
+
+</Tab>
+<Tab title="Serve">
+
+```bash
+smc serve examples/report.mdx --port 4321 --open
+```
+
+</Tab>
+</Tabs>
+
+## Recommended workflow
+
+<Steps>
+<Step title="Write the document">
+The agent writes one `.mdx` file using GFM Markdown and registered Bulma-based components.
+</Step>
+<Step title="Validate">
+The agent runs `smc validate report.mdx` and fixes any structured errors.
+</Step>
+<Step title="Render">
+The agent runs `smc render report.mdx -o report.html`.
+</Step>
+</Steps>
+
+## Reusable prompt
+
+<PromptBox title="Agent instruction">
+
+```text
+Write a single-page MDX canvas document. Use only registered simple-mdx-canvas components. Validate and render it before returning the final paths.
+```
+
+</PromptBox>
+
+
+$$
+E = mc^2
+$$

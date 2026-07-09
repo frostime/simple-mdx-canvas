@@ -1,0 +1,72 @@
+:root {
+  --canvas-page-width: 1080px;
+  --canvas-toolbar-background: color-mix(in srgb, var(--bulma-scheme-main) 88%, transparent);
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--bulma-body-background-color);
+}
+
+body {
+  margin: 0;
+}
+
+.canvas-shell {
+  min-height: 100vh;
+  background: var(--bulma-body-background-color);
+  color: var(--bulma-body-color);
+}
+
+.canvas-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(10px);
+  background: var(--canvas-toolbar-background);
+  border-bottom: 1px solid var(--bulma-border);
+}
+
+.canvas-toolbar-inner {
+  max-width: var(--canvas-page-width);
+  margin: 0 auto;
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.canvas-page {
+  max-width: var(--canvas-page-width);
+  margin: 0 auto;
+  padding: 3rem 1.25rem 5rem;
+}
+
+.canvas-page > :first-child {
+  margin-top: 0;
+}
+
+.chart-container {
+  position: relative;
+  min-height: 320px;
+}
+
+figure.box img {
+  display: block;
+  max-width: 100%;
+  border-radius: var(--bulma-radius);
+}
+
+pre,
+code {
+  background: var(--bulma-code-background);
+  color: var(--bulma-code);
+}
+
+@media (max-width: 768px) {
+  .canvas-page {
+    padding-top: 2rem;
+  }
+}
