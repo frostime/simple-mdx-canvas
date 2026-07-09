@@ -10,6 +10,7 @@ export const defaultConfig: CanvasConfig = {
   },
   mdx: {
     gfm: true,
+    math: true,
     allowImports: false,
     allowExports: false,
     allowRawHtml: false,

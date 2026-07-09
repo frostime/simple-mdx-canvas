@@ -1,5 +1,5 @@
 import { compile } from '@mdx-js/mdx'
-import remarkGfm from 'remark-gfm'
+import { rehypePluginsFor, remarkPluginsFor } from './mdx-options.js'
 import type { CanvasConfig, CanvasDocument, CanvasRegistry, CanvasValidationError, CanvasValidationResult } from './types.js'
 
 const componentTagRegex = /<([A-Z][A-Za-z0-9]*)(\s[^<>]*?)?(\/?)>/g
@@ -76,7 +76,8 @@ export async function validateDocument(
 
   try {
     await compile(source, {
-      remarkPlugins: config.mdx.gfm ? [remarkGfm] : [],
+      remarkPlugins: remarkPluginsFor(config) as any,
+      rehypePlugins: rehypePluginsFor(config) as any,
       jsx: true,
       outputFormat: 'function-body',
       development: false,

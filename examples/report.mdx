@@ -6,7 +6,7 @@ theme: "academic"
 
 # simple-mdx-canvas Example Report
 
-<Callout type="note" title="Core idea">
+<Callout type="summary" title="Core idea">
 `simple-mdx-canvas` turns an agent-written Markdown document into a Bulma-styled HTML canvas without requiring a full frontend project.
 </Callout>
 
@@ -69,6 +69,16 @@ Use raw Bulma HTML only when a semantic component does not exist yet.
   ]'
 />
 
+## Formula support
+
+Inline math is supported by default, for example $C = C_{content} + C_{layout} + C_{runtime}$.
+
+Block math is also supported:
+
+$$
+\mathrm{CanvasValue} = \frac{\mathrm{visual\ clarity} + \mathrm{agent\ reliability}}{\mathrm{setup\ cost}}
+$$
+
 ## Complexity comparison
 
 <Chart
@@ -127,8 +137,3 @@ Write a single-page MDX canvas document. Use only registered simple-mdx-canvas c
 ```
 
 </PromptBox>
-
-
-$$
-E = mc^2
-$$

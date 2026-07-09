@@ -11,7 +11,7 @@ Create a single `.mdx` document that renders through `simple-mdx-canvas` into a 
 
 ## Rules
 
-- Use GFM Markdown for normal prose.
+- Use GFM Markdown, `$...$` inline math, and `$$...$$` display math for normal prose.
 - Use components only when they improve structure, visualization, or presentation value.
 - Use only registered components.
 - Do not import, export, or define components inside the MDX document.
@@ -44,3 +44,8 @@ simple-mdx-canvas render <file>.mdx -o <file>.html
 If validation or rendering fails, fix the `.mdx` and rerun.
 
 Final response must include both the `.mdx` and `.html` paths.
+
+
+## Math
+
+Use `$...$` for inline formulas and `$$...$$` for display formulas. Do not use images for ordinary equations.

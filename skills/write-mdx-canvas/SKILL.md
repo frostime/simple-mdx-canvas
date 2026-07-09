@@ -23,7 +23,7 @@ Final response must include:
 
 ## Authoring Rules
 
-Use GFM Markdown for normal prose:
+Use GFM Markdown, `$...$` inline math, and `$$...$$` display math for normal prose:
 
 - headings;
 - paragraphs;
@@ -127,3 +127,8 @@ A good MDX canvas is:
 - self-contained enough for the user to open the HTML directly;
 - component-light unless visualization improves comprehension;
 - valid under the restricted MDX policy.
+
+
+## Math
+
+Use `$...$` for inline formulas and `$$...$$` for display formulas. Do not use images for ordinary equations.

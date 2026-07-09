@@ -2,7 +2,7 @@
 
 `simple-mdx-canvas` is an agent-facing single-page MDX canvas renderer.
 
-It lets an agent write one `.mdx` document with GFM Markdown plus controlled visual components, then render it into a directly openable HTML artifact.
+It lets an agent write one `.mdx` document with GFM Markdown, math notation, and controlled visual components, then render it into a directly openable HTML artifact.
 
 ## Install
 
@@ -76,8 +76,9 @@ Use `--trusted-mdx` only for local trusted documents.
 
 ## Built-in Components
 
-Built-in component implementations are split under `src/runtime/components/`, one component family per file. The registry imports them from `src/runtime/components/index.ts`.
+Math support is enabled by default through `remark-math`, `rehype-katex`, and embedded KaTeX CSS. Built-in component implementations are split under `src/runtime/components/`, one component family per file. The registry imports them from `src/runtime/components/index.ts`.
 
+- Math notation — `$inline$` and `$$block$$`, rendered with KaTeX
 - `Chart` — rendered with Chart.js
 - `Columns` / `Column`
 - `Grid` / `Cell`
@@ -103,6 +104,12 @@ theme: "academic"
 <Callout type="summary" title="Decision">
 Use `simple-mdx-canvas` when the output should be more visual than Markdown but lighter than a frontend project.
 </Callout>
+
+Inline math works: $C = C_{content} + C_{layout} + C_{runtime}$.
+
+$$
+\mathrm{Value} = \frac{\mathrm{visual\ clarity}}{\mathrm{setup\ cost}}
+$$
 
 <Chart
   type="bar"

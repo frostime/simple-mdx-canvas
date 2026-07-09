@@ -4,12 +4,12 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { evaluate } from '@mdx-js/mdx'
 import * as jsxRuntime from 'react/jsx-runtime'
-import remarkGfm from 'remark-gfm'
 import { loadConfig } from './config.js'
 import { loadDocument } from './document.js'
 import { loadRegistry } from './registry.js'
 import { validateDocument } from './validate.js'
 import { loadChartJsScript, loadThemeCss } from './theme.js'
+import { rehypePluginsFor, remarkPluginsFor } from './mdx-options.js'
 import { CanvasValidationException } from './errors.js'
 import { buildHtmlShell } from '../runtime/html-shell.js'
 import type { RenderOptions } from './types.js'
@@ -30,7 +30,8 @@ export async function renderToHtml(options: RenderOptions): Promise<{ html: stri
 
   const evaluated = await evaluate(document.content, {
     ...(jsxRuntime as any),
-    remarkPlugins: config.mdx.gfm ? [remarkGfm] : [],
+    remarkPlugins: remarkPluginsFor(config) as any,
+    rehypePlugins: rehypePluginsFor(config) as any,
     development: false,
   })
 

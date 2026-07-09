@@ -70,3 +70,14 @@ code {
     padding-top: 2rem;
   }
 }
+
+/* Math rendering: KaTeX owns formula typography; canvas only handles overflow. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+}
+
+.katex-display > .katex {
+  max-width: 100%;
+}

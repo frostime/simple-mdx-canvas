@@ -4,7 +4,7 @@
 
 `simple-mdx-canvas` is an agent-facing single-page MDX canvas renderer.
 
-It converts one `.mdx` document into a visual, report-ready HTML page using GFM-compatible Markdown plus controlled, extensible components.
+It converts one `.mdx` document into a visual, report-ready HTML page using GFM-compatible Markdown, math notation, and controlled, extensible components.
 
 The product serves agent workflows: an agent can write one MDX document, validate it, render it, and return a directly openable HTML artifact to the user.
 
@@ -92,7 +92,7 @@ theme?: string
 layout?: document | report
 ```
 
-The Markdown baseline is GFM-compatible Markdown. Components are written as JSX-like MDX tags but are restricted by the component registry.
+The Markdown baseline is GFM-compatible Markdown. Math notation is enabled by default with `$...$` inline math and `$$...$$` display math. Components are written as JSX-like MDX tags but are restricted by the component registry.
 
 ## 6. Component Policy
 
@@ -124,7 +124,21 @@ Markdown children are allowed here.
 />
 ```
 
+Math syntax is not a component and does not require registry registration:
+
+```mdx
+Inline math: $C = C_{content} + C_{layout}$.
+
+$$
+\mathrm{Value} = \frac{\mathrm{clarity}}{\mathrm{cost}}
+$$
+```
+
 ## 7. Built-in Components
+
+Built-in non-component rendering:
+
+- Math notation — parsed with `remark-math`, rendered with KaTeX, and styled through embedded KaTeX CSS
 
 MVP components:
 

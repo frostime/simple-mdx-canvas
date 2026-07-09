@@ -7,7 +7,7 @@ The system is a thin single-page renderer, not a documentation framework.
 The implementation reuses mature ecosystem primitives:
 
 - MDX compiler for Markdown + JSX parsing and evaluation;
-- remark-gfm for GFM Markdown support;
+- remark-gfm, remark-math, rehype-katex for GFM Markdown support;
 - React server rendering for HTML output;
 - Bulma CSS for stable visual primitives;
 - a local component registry for controlled MDX components;
@@ -212,3 +212,8 @@ High-value next steps:
 5. Add a richer but still constrained `Chart` schema.
 6. Add `Snippet` support for reusable MDX fragments.
 7. Add tests for validation error codes.
+
+
+## Math Pipeline
+
+Math notation is part of the document language, not a component. The renderer enables `remark-math` and `rehype-katex` by default, then embeds KaTeX CSS into the generated HTML. Inline math uses `$...$`; display math uses `$$...$$`. The canvas stylesheet only adds overflow handling for wide display equations; KaTeX owns formula typography.

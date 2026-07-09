@@ -16,6 +16,7 @@ export default defineConfig({
   },
   mdx: {
     gfm: true,
+    math: true,
     allowImports: false,
     allowExports: false,
     allowRawHtml: false

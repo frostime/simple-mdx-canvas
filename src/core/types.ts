@@ -18,6 +18,7 @@ export type CanvasConfig = {
   }
   mdx: {
     gfm: boolean
+    math: boolean
     allowImports: boolean
     allowExports: boolean
     allowRawHtml: boolean
