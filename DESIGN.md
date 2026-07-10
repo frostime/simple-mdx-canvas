@@ -133,7 +133,7 @@ src/runtime/components/
 
 Built-in purposes:
 
-- `Chart`: constrained data visualization rendered with Chart.js;
+- `Chart`: thin Chart.js configuration pass-through;
 - `Columns`: pure Bulma columns layout;
 - `Grid`: Bulma fixed-grid layout;
 - `Table`: Bulma table from JSON rows;
@@ -146,7 +146,7 @@ Built-in purposes:
 - `PromptBox`: copy-oriented prompt/command block;
 - `HtmlBlock`: safe or trusted raw HTML fragment for small Bulma-based snippets.
 
-`Chart` accepts a constrained schema instead of exposing the full Chart.js API. This keeps agent output stable while reusing a mature chart runtime.
+`Chart` accepts a Chart.js configuration object. The component stays deep by delegating chart semantics to Chart.js instead of inventing a smaller parallel chart API.
 
 `Columns` is deliberately shallow visually: it arranges children but does not add borders, backgrounds, or padding. Visual emphasis belongs in child components such as `Card`, `Callout`, or `Figure`.
 
@@ -211,9 +211,8 @@ High-value next steps:
 2. Add asset existence validation for `Figure`.
 3. Add real local user component example.
 4. Add optional self-contained asset bundling.
-5. Add a richer but still constrained `Chart` schema.
-6. Add `Snippet` support for reusable MDX fragments.
-7. Add tests for validation error codes.
+5. Add `Snippet` support for reusable MDX fragments.
+6. Add tests for validation error codes.
 
 
 ## Math Pipeline

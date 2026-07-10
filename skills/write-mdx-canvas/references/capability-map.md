@@ -18,7 +18,7 @@ A canvas document may combine these layers:
 | Expression need | Available capability |
 |---|---|
 | Emphasized note, risk, definition, summary, or decision | `Callout` |
-| Numeric chart: bar, line, pie, scatter | `Chart` |
+| Chart.js-supported visualization | `Chart` with Chart.js `config` |
 | Structured rows from JSON-like data | `Table` |
 | Side-by-side content | `Columns` / `Column` |
 | Dense region layout | `Grid` / `Cell` |
@@ -39,13 +39,10 @@ Use a component when it carries information better than plain Markdown for the c
 
 ## Data Props
 
-For JSON-backed props such as `Chart.data`, `Table.data`, and `Table.columns`, prefer single-quoted JSON strings:
+For JSON-backed props such as `Chart.config`, `Table.data`, and `Table.columns`, prefer single-quoted JSON strings:
 
 ```mdx
-data='[
-  { "name": "A", "value": 1 },
-  { "name": "B", "value": 2 }
-]'
+config='{ "type": "bar", "data": { "labels": ["A", "B"], "datasets": [{ "label": "Value", "data": [1, 2] }] } }'
 ```
 
 This keeps data content-like and avoids unnecessary MDX JavaScript expressions.

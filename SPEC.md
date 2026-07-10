@@ -113,14 +113,16 @@ Markdown children are allowed here.
 </Callout>
 
 <Chart
-  type="bar"
   title="Cost comparison"
-  x="model"
-  y="cost"
-  data='[
-    { "model": "A", "cost": 3.2 },
-    { "model": "B", "cost": 5.8 }
-  ]'
+  config='{
+    "type": "bar",
+    "data": {
+      "labels": ["A", "B"],
+      "datasets": [
+        { "label": "Cost", "data": [3.2, 5.8] }
+      ]
+    }
+  }'
 />
 ```
 
@@ -143,7 +145,7 @@ Built-in non-component rendering:
 
 MVP components:
 
-- `Chart` — constrained data visualization rendered with Chart.js
+- `Chart` — visualization rendered from a Chart.js configuration object
 - `Columns` / `Column` — pure Bulma columns layout only; visual emphasis belongs in child components
 - `Grid` / `Cell` — Bulma fixed-grid layout
 - `Table` — Bulma table from JSON rows

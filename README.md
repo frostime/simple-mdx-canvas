@@ -79,7 +79,7 @@ Use `--trusted-mdx` only for local trusted documents.
 Math support is enabled by default through `remark-math`, `rehype-katex`, and embedded KaTeX CSS. Built-in component implementations are split under `src/runtime/components/`, one component family per file. The registry imports them from `src/runtime/components/index.ts`.
 
 - Math notation — `$inline$` and `$$block$$`, rendered with KaTeX
-- `Chart` — rendered with Chart.js
+- `Chart` — rendered from a Chart.js configuration object
 - `Columns` / `Column`
 - `Grid` / `Cell`
 - `Table`
@@ -114,15 +114,16 @@ $$
 $$
 
 <Chart
-  type="bar"
   title="Rendering options"
-  x="option"
-  y="complexity"
-  data='[
-    { "option": "Markdown", "complexity": 1 },
-    { "option": "MDX Canvas", "complexity": 3 },
-    { "option": "Full app", "complexity": 8 }
-  ]'
+  config='{
+    "type": "bar",
+    "data": {
+      "labels": ["Markdown", "MDX Canvas", "Full app"],
+      "datasets": [
+        { "label": "Complexity", "data": [1, 3, 8] }
+      ]
+    }
+  }'
 />
 ```
 

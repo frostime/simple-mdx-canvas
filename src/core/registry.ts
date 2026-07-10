@@ -32,23 +32,29 @@ const jsonArrayString = z.string().refine((value) => {
   }
 }, 'must be a JSON array string')
 
+const jsonObjectString = z.string().refine((value) => {
+  try {
+    const parsed = JSON.parse(value) as unknown
+    return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
+  } catch {
+    return false
+  }
+}, 'must be a JSON object string')
+
 export const builtInManifests: CanvasComponentManifest<any>[] = [
   {
     name: 'Chart',
-    description: 'Render a bar, line, pie, or scatter chart from JSON data.',
+    description: 'Render a Chart.js chart from an inline Chart.js configuration object.',
     component: Chart,
     schema: z.object({
-      type: z.enum(['bar', 'line', 'pie', 'scatter']),
       title: z.string().optional(),
       description: z.string().optional(),
-      x: z.string().optional(),
-      y: z.string().optional(),
-      data: z.union([jsonArrayString, z.array(z.record(z.unknown()))]),
+      config: z.union([jsonObjectString, z.record(z.unknown())]),
     }),
     allowMarkdownChildren: false,
     renderMode: 'hydrated',
     examples: [
-      `<Chart type="bar" title="Cost" x="model" y="cost" data='[{"model":"A","cost":3.2}]' />`,
+      `<Chart config='{ "type": "bar", "data": { "labels": ["A"], "datasets": [{ "label": "Value", "data": [3] }] } }' />`,
     ],
   },
   {

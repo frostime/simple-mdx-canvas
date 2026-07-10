@@ -1,55 +1,63 @@
 # Chart
 
-Use `Chart` for numeric visualization: bar, line, pie, or scatter.
+Use `Chart` to render a Chart.js chart. The component passes the `config` prop to Chart.js after JSON parsing.
 
 ## Props
 
 | Prop | Required | Values |
 |---|---:|---|
-| `type` | yes | `"bar"`, `"line"`, `"pie"`, `"scatter"` |
-| `data` | yes | JSON array string or array expression |
-| `x` | no | field name for labels/x values; defaults to `x` |
-| `y` | no | field name for numeric values; defaults to `y` |
-| `title` | no | chart title |
-| `description` | no | short supporting text |
+| `config` | yes | Chart.js configuration object as JSON string or object expression |
+| `title` | no | chart title displayed above the chart |
+| `description` | no | short supporting text displayed above the chart |
 
 Children are not allowed. Use a self-closing tag.
 
-## Example
+## Bar Example
 
 ```mdx
 <Chart
-  type="bar"
   title="Output path complexity"
   description="Illustrative score: lower is simpler."
-  x="path"
-  y="complexity"
-  data='[
-    { "path": "Markdown", "complexity": 1 },
-    { "path": "MDX Canvas", "complexity": 3 },
-    { "path": "Full app", "complexity": 8 }
-  ]'
+  config='{
+    "type": "bar",
+    "data": {
+      "labels": ["Markdown", "MDX Canvas", "Full app"],
+      "datasets": [
+        { "label": "Complexity", "data": [1, 3, 8] }
+      ]
+    },
+    "options": {
+      "scales": {
+        "y": { "beginAtZero": true }
+      }
+    }
+  }'
 />
 ```
 
-## Scatter Example
+## Multi-Series Example
 
 ```mdx
 <Chart
-  type="scatter"
-  title="Cost vs quality"
-  x="cost"
-  y="quality"
-  data='[
-    { "cost": 1.2, "quality": 72 },
-    { "cost": 2.5, "quality": 81 }
-  ]'
+  title="Quarterly revenue"
+  config='{
+    "type": "line",
+    "data": {
+      "labels": ["Q1", "Q2", "Q3", "Q4"],
+      "datasets": [
+        { "label": "Product A", "data": [12, 19, 15, 22], "tension": 0.25 },
+        { "label": "Product B", "data": [8, 11, 18, 20], "tension": 0.25 }
+      ]
+    }
+  }'
 />
 ```
 
 ## Rules
 
-- Use `Chart` only for numeric data.
-- Keep data rows small enough to read inside the MDX file.
-- Do not pass raw Chart.js configuration; the component exposes a constrained schema.
+- Write valid Chart.js configuration JSON in `config`.
+- Prefer single-quoted MDX attributes around the JSON string.
+- Use Chart.js `data.datasets`, `options.scales`, `options.plugins`, and other Chart.js fields directly.
+- The renderer may fill missing theme defaults such as text color and responsiveness; it should not override explicit config values.
+- Keep inline chart data small enough to read inside the MDX file.
 - Prefer `Table` when exact values matter more than visual trend.

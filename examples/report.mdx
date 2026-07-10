@@ -90,17 +90,22 @@ $$
 ## Complexity comparison
 
 <Chart
-  type="bar"
   title="Output path complexity"
   description="Illustrative scale: lower is simpler."
-  x="path"
-  y="complexity"
-  data='[
-    { "path": "Markdown", "complexity": 1 },
-    { "path": "MDX Canvas", "complexity": 3 },
-    { "path": "Document site", "complexity": 7 },
-    { "path": "Full React app", "complexity": 9 }
-  ]'
+  config='{
+    "type": "bar",
+    "data": {
+      "labels": ["Markdown", "MDX Canvas", "Document site", "Full React app"],
+      "datasets": [
+        { "label": "Complexity", "data": [1, 3, 7, 9] }
+      ]
+    },
+    "options": {
+      "scales": {
+        "y": { "beginAtZero": true }
+      }
+    }
+  }'
 />
 
 ## Code highlighting

@@ -117,14 +117,16 @@ Markdown content for the second option.
 </Columns>
 
 <Chart
-  type="bar"
   title="Complexity comparison"
-  x="option"
-  y="complexity"
-  data='[
-    { "option": "Markdown", "complexity": 1 },
-    { "option": "MDX Canvas", "complexity": 3 }
-  ]'
+  config='{
+    "type": "bar",
+    "data": {
+      "labels": ["Markdown", "MDX Canvas"],
+      "datasets": [
+        { "label": "Complexity", "data": [1, 3] }
+      ]
+    }
+  }'
 />
 
 <HtmlBlock>

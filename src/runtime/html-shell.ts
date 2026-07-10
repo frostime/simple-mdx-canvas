@@ -59,32 +59,27 @@ const clientScript = `
 
   function applyChartTheme(spec) {
     var colors = chartColors();
-    var palette = [colors.primary, colors.info, colors.success, colors.warning, colors.danger, colors.link];
     spec.options = spec.options || {};
-    spec.options.color = colors.text;
-    spec.options.borderColor = colors.border;
-    spec.options.plugins = spec.options.plugins || {};
-    spec.options.plugins.legend = Object.assign({ labels: { color: colors.text } }, spec.options.plugins.legend || {});
-    spec.options.scales = spec.options.scales || {};
-    Object.keys(spec.options.scales).forEach(function (key) {
-      spec.options.scales[key] = Object.assign({
-        ticks: { color: colors.text },
-        grid: { color: colors.border }
-      }, spec.options.scales[key] || {});
-    });
+    if (spec.options.responsive == null) spec.options.responsive = true;
+    if (spec.options.maintainAspectRatio == null) spec.options.maintainAspectRatio = false;
+    if (spec.options.color == null) spec.options.color = colors.text;
+    if (spec.options.borderColor == null) spec.options.borderColor = colors.border;
 
-    if (spec.data && Array.isArray(spec.data.datasets)) {
-      spec.data.datasets.forEach(function (dataset, index) {
-        var color = palette[index % palette.length];
-        if (spec.type === 'pie') {
-          dataset.backgroundColor = palette;
-          dataset.borderColor = cssVar('--bulma-scheme-main', '#ffffff');
-        } else {
-          dataset.backgroundColor = color;
-          dataset.borderColor = color;
-          dataset.pointBackgroundColor = color;
-          dataset.tension = 0.25;
-        }
+    spec.options.plugins = spec.options.plugins || {};
+    spec.options.plugins.legend = spec.options.plugins.legend || {};
+    spec.options.plugins.legend.labels = spec.options.plugins.legend.labels || {};
+    if (spec.options.plugins.legend.labels.color == null) {
+      spec.options.plugins.legend.labels.color = colors.text;
+    }
+
+    if (spec.options.scales) {
+      Object.keys(spec.options.scales).forEach(function (key) {
+        var scale = spec.options.scales[key] || {};
+        scale.ticks = scale.ticks || {};
+        scale.grid = scale.grid || {};
+        if (scale.ticks.color == null) scale.ticks.color = colors.text;
+        if (scale.grid.color == null) scale.grid.color = colors.border;
+        spec.options.scales[key] = scale;
       });
     }
 

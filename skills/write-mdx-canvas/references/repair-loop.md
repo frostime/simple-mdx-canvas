@@ -35,7 +35,7 @@ If either command fails, repair the `.mdx` file and rerun both commands.
 ### Use JSON strings for complex data
 
 ```mdx
-<Chart type="bar" x="name" y="value" data='[{"name":"A","value":1}]' />
+<Chart config='{ "type": "bar", "data": { "labels": ["A"], "datasets": [{ "label": "Value", "data": [1] }] } }' />
 ```
 
 ### Keep component children in MDX-safe form
