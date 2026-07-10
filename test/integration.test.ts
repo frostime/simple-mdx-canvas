@@ -177,3 +177,33 @@ test('render rejects derive without --trusted-mdx (validate blocks render)', asy
   )
   await rm(dir, { recursive: true, force: true })
 })
+
+test('render with --no-validate still fail-closes on $derive without --trusted-mdx', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'smc-it-'))
+  const mdxPath = path.join(dir, 'doc.mdx')
+  const outPath = path.join(dir, 'out.html')
+  await writeFile(mdxPath, `---\ntitle: t\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n    $derive:\n      ds: "r => r"\n---\n<Table from="ds" columns='["a"]' />\n`)
+  await assert.rejects(
+    () => renderToHtml({ input: mdxPath, output: outPath, cwd: dir, validate: false, trustedMdx: false }),
+    (err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err)
+      return msg.includes('SMC_FORBIDDEN_DATA_TRANSFORM')
+    },
+  )
+  await rm(dir, { recursive: true, force: true })
+})
+
+test('render with --no-validate fail-closes on unknown from target', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'smc-it-'))
+  const mdxPath = path.join(dir, 'doc.mdx')
+  const outPath = path.join(dir, 'out.html')
+  await writeFile(mdxPath, `---\ntitle: t\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n---\n<Table from="missing" columns='["a"]' />\n`)
+  await assert.rejects(
+    () => renderToHtml({ input: mdxPath, output: outPath, cwd: dir, validate: false }),
+    (err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err)
+      return msg.includes('SMC_UNKNOWN_DATA')
+    },
+  )
+  await rm(dir, { recursive: true, force: true })
+})

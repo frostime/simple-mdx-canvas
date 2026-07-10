@@ -48,7 +48,7 @@ test('resolves $src relative to docDir', async () => {
   await writeFile(path.join(dir, 'rows.json'), JSON.stringify([{ x: 1 }, { x: 2 }]))
   const out = await resolveDocumentData(
     fm({ rows: { $src: 'rows.json' } }),
-    { ...optsBase, docDir: dir },
+    { ...optsBase, cwd: dir, docDir: dir },
   )
   assert.deepEqual(codes(out), [])
   assert.deepEqual(out.data.get('rows'), [{ x: 1 }, { x: 2 }])
@@ -68,7 +68,7 @@ test('$src non-JSON → SMC_INVALID_DATA_SOURCE', async () => {
   await writeFile(path.join(dir, 'broken.json'), '{ not json')
   const out = await resolveDocumentData(
     fm({ rows: { $src: 'broken.json' } }),
-    { ...optsBase, docDir: dir },
+    { ...optsBase, cwd: dir, docDir: dir },
   )
   assert.deepEqual(codes(out), ['SMC_INVALID_DATA_SOURCE'])
   await rm(dir, { recursive: true, force: true })
@@ -154,6 +154,44 @@ test('$derive non-string lambda → SMC_INVALID_DATA_SOURCE', async () => {
   const out = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: { bad: 42 as unknown as string } } }),
     { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+  )
+  assert.deepEqual(codes(out), ['SMC_INVALID_DATA_SOURCE'])
+})
+
+test('$derive non-object shape (string/array) → SMC_INVALID_DATA_SOURCE', async () => {
+  const str = await resolveDocumentData(
+    fm({ rows: { $inline: [1], $derive: 'nope' as unknown as never } }),
+    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+  )
+  assert.deepEqual(codes(str), ['SMC_INVALID_DATA_SOURCE'])
+  const arr = await resolveDocumentData(
+    fm({ rows: { $inline: [1], $derive: [1, 2] as unknown as never } }),
+    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+  )
+  assert.deepEqual(codes(arr), ['SMC_INVALID_DATA_SOURCE'])
+})
+
+test('$derive without $src/$inline → SMC_INVALID_DATA_SOURCE', async () => {
+  const out = await resolveDocumentData(
+    fm({ x: { $derive: { y: '() => 1' } } }),
+    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+  )
+  assert.deepEqual(codes(out), ['SMC_INVALID_DATA_SOURCE'])
+})
+
+test('$src absolute path → SMC_INVALID_DATA_SOURCE', async () => {
+  const abs = process.platform === 'win32' ? 'C:/secret.json' : '/secret.json'
+  const out = await resolveDocumentData(
+    fm({ rows: { $src: abs } }),
+    { ...optsBase, docDir: process.cwd() },
+  )
+  assert.deepEqual(codes(out), ['SMC_INVALID_DATA_SOURCE'])
+})
+
+test('$src escaping project root → SMC_INVALID_DATA_SOURCE', async () => {
+  const out = await resolveDocumentData(
+    fm({ rows: { $src: '../outside.json' } }),
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_INVALID_DATA_SOURCE'])
 })

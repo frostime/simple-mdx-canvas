@@ -79,7 +79,7 @@ Inside `X[]...`, missing fields or out-of-bounds indices on individual elements 
 
 `$derive` lambdas are evaluated synchronously in a constrained `vm` sandbox with a 200ms timeout. The sandbox provides `Math`, `JSON`, `Number`, `String`, `Boolean`, `Symbol`, `Date`, `Map`, `Set`, `RegExp`, `Array`, `Object`, and common static methods. It does **not** provide `process`, `require`, `module`, `globalThis`, `Buffer`, timers, `fetch`, or any DOM/BOM.
 
-This is a "prevent accidental misuse + limit time" layer, not an adversarial sandbox. `$derive` stays gated behind `--trusted-mdx`.
+This is a "prevent accidental misuse + limit time" layer, not an adversarial sandbox. The blocked globals above are not intentionally supplied, but `vm` contexts still expose intrinsics reachable through constructor chains (e.g. `Object.constructor.constructor`); do not rely on their absence for adversarial isolation. `$derive` stays gated behind `--trusted-mdx`.
 
 ## Error codes
 

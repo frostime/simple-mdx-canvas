@@ -31,7 +31,7 @@ export async function renderToHtml(options: RenderOptions): Promise<{ html: stri
     if (!result.ok) throw new CanvasValidationException(result.errors)
   }
 
-  const outputSource = await resolveDataSources(document, registry, config)
+  const outputSource = await resolveDataSources(document, registry, config, cwd, options.trustedMdx === true)
 
   const evaluated = await evaluate(outputSource, {
     ...(jsxRuntime as any),
@@ -71,17 +71,27 @@ export async function renderToHtml(options: RenderOptions): Promise<{ html: stri
 // `from="..."` token is replaced and everything else — whitespace, other
 // attributes, fenced code — stays untouched. Splices are applied right-to-left
 // so earlier offsets remain valid.
+//
+// Fail-closed: if data resolution or any `from` projection fails, render aborts
+// with a CanvasValidationException rather than emitting a partial/empty result.
+// This guards the `validate: false` path; when validation runs, the same errors
+// surface there first.
 async function resolveDataSources(
   document: { path: string; content: string; frontmatter: { data?: unknown } },
   registry: CanvasRegistry,
   config: Awaited<ReturnType<typeof loadConfig>>,
+  cwd: string,
+  trustedMdx: boolean,
 ): Promise<string> {
   const data = await resolveDocumentData(document.frontmatter as never, {
-    cwd: '',
+    cwd,
     docDir: path.dirname(document.path),
-    trustedMdx: true,
+    trustedMdx,
     file: document.path,
   })
+  if (data.errors.length > 0) {
+    throw new CanvasValidationException(data.errors)
+  }
   const consumers = new Map<string, string>()
   for (const [name, manifest] of registry.manifests) {
     if (manifest.dataProp) consumers.set(name, manifest.dataProp)
@@ -98,7 +108,9 @@ async function resolveDataSources(
       if (attr.name !== 'from') continue
       if (typeof attr.value !== 'string') continue
       const resolved = resolveFrom(attr.value, data.data)
-      if (!resolved.ok) return document.content // validate should have caught this
+      if (!resolved.ok) {
+        throw new CanvasValidationException([resolved.error])
+      }
       // Splice as a JSX expression container: JSON output is a valid JS literal.
       const replacement = `${dataProp}={${JSON.stringify(resolved.value)}}`
       splices.push({ start: attr.start, end: attr.end, replacement })

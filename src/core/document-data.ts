@@ -87,12 +87,18 @@ export async function resolveDocumentData(
     }
     data.set(declName, baseResult.value)
 
-    if (decl.value.$derive) {
+    const deriveRaw = decl.value.$derive
+    const hasDerive = deriveRaw !== undefined && deriveRaw !== null && deriveRaw !== false
+    if (hasDerive) {
+      if (typeof deriveRaw !== 'object' || Array.isArray(deriveRaw)) {
+        errors.push(dataError('SMC_INVALID_DATA_SOURCE', options.file, `"$derive" on "${declName}" must be a map of { name: lambda } objects.`, 'Use $derive: { name: "r => ..." }.'))
+        continue
+      }
       if (!options.trustedMdx) {
         errors.push(dataError('SMC_FORBIDDEN_DATA_TRANSFORM', options.file, `"$derive" on "${declName}" requires --trusted-mdx.`, 'Remove $derive or run with --trusted-mdx.'))
         continue
       }
-      for (const [derivedName, lambda] of Object.entries(decl.value.$derive)) {
+      for (const [derivedName, lambda] of Object.entries(deriveRaw as Record<string, unknown>)) {
         if (!IDENT_RE.test(derivedName)) {
           errors.push(dataError('SMC_INVALID_DATA_NAME', options.file, `Derived name "${derivedName}" is not a valid identifier.`, 'Use [A-Za-z_][A-Za-z0-9_]* for derived names.'))
           continue
@@ -144,19 +150,26 @@ async function resolveSource(
   if (hasSrc && hasInline) {
     return { error: dataError('SMC_DATA_SOURCE_CONFLICT', options.file, `"${name}" declares both $src and $inline.`, 'Use only one source per declaration.') }
   }
-  if (!hasSrc && !hasInline && !decl.$derive) {
-    return { error: dataError('SMC_INVALID_DATA_SOURCE', options.file, `"${name}" has no $src, $inline, or $derive.`, 'Add $src, $inline, or $derive to each declaration.') }
-  }
   if (!hasSrc && !hasInline) {
-    // $derive without $src/$inline: input is null. Eval-time the lambda will
-    // usually fail, surfacing SMC_DATA_TRANSFORM_ERROR rather than blocking here.
-    return { value: null }
+    // $derive without $src/$inline: a declaration must carry a data source;
+    // $derive transforms that source, it is not a source itself.
+    return { error: dataError('SMC_INVALID_DATA_SOURCE', options.file, `"${name}" has no $src or $inline.`, 'Add $src or $inline to each declaration; $derive only transforms an existing source.') }
   }
   if (hasSrc) {
     if (typeof decl.$src !== 'string' || decl.$src.trim() === '') {
       return { error: dataError('SMC_INVALID_DATA_SOURCE', options.file, `"$src" on "${name}" must be a non-empty string path.`, 'Use a path like $src: data/foo.json.') }
     }
+    if (path.isAbsolute(decl.$src)) {
+      return { error: dataError('SMC_INVALID_DATA_SOURCE', options.file, `"$src" on "${name}" must be a relative path.`, 'Use a path relative to the .mdx file, like $src: data/foo.json.') }
+    }
     const resolved = path.resolve(options.docDir, decl.$src)
+    // Confine $src to the project root (cwd) so a document cannot read JSON
+    // outside the workspace. cwd falls back to docDir when unset.
+    const root = path.resolve(options.cwd || options.docDir)
+    const rel = path.relative(root, resolved)
+    if (rel.startsWith('..') || path.isAbsolute(rel)) {
+      return { error: dataError('SMC_INVALID_DATA_SOURCE', options.file, `"$src" "${decl.$src}" on "${name}" escapes the project root.`, 'Keep $src paths inside the project directory.') }
+    }
     if (!existsSync(resolved)) {
       return { error: dataError('SMC_MISSING_ASSET', options.file, `$src "${decl.$src}" for "${name}" not found (resolved: ${resolved}).`, 'Create the file or fix the path.') }
     }
