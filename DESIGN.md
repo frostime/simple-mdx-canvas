@@ -144,7 +144,7 @@ Built-in purposes:
 - `Steps`: process explanation;
 - `Figure`: image with caption;
 - `PromptBox`: copy-oriented prompt/command block;
-- `HtmlBlock`: safe or trusted raw HTML fragment for small Bulma-based snippets.
+- `HtmlBlock`: raw HTML fragment for Bulma snippets, embeds, and scripts.
 
 `Chart` accepts a Chart.js configuration object. The component stays deep by delegating chart semantics to Chart.js instead of inventing a smaller parallel chart API.
 

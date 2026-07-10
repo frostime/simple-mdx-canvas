@@ -20,7 +20,7 @@ theme: "academic"
 
 Plain Markdown is portable, but it is weak at visual comparison, guided reading, and report-style presentation. A full React app is too heavy for a one-off agent artifact.
 
-<Columns cols={2}>
+<Columns>
 <Column title="Plain Markdown">
 
 - Low cost
@@ -72,7 +72,7 @@ Use raw Bulma HTML only when a semantic component does not exist yet.
 <HtmlBlock>
 
 ```html
-<div class="notification is-info is-light"><strong>Bulma HTML:</strong> HtmlBlock accepts sanitized children with Bulma classes.</div>
+<div class="notification is-info is-light"><strong>Bulma HTML:</strong> HtmlBlock injects raw HTML children.</div>
 ```
 
 </HtmlBlock>

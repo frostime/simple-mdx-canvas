@@ -1,17 +1,12 @@
 # HtmlBlock
 
-Use `HtmlBlock` for a small HTML fragment that should use Bulma CSS classes directly.
+Use `HtmlBlock` for raw HTML fragments that should render directly inside the canvas.
 
 ## Props
 
-| Prop | Required | Values |
-|---|---:|---|
-| `unsafe` | no | boolean; default `false` |
-| `html` | no | backward-compatible escaped HTML string; prefer children for new documents |
+`HtmlBlock` has no props. Pass HTML as children, usually in a fenced `html` code block.
 
-HTML content should be passed as children, usually in a fenced `html` code block.
-
-## Safe Example
+## Example
 
 ````mdx
 <HtmlBlock>
@@ -25,24 +20,20 @@ HTML content should be passed as children, usually in a fenced `html` code block
 </HtmlBlock>
 ````
 
-Safe mode sanitizes the fragment before rendering. It removes unsafe tags and attributes, including scripts, styles, event handlers, and unsafe URLs.
-
-## Unsafe Example
+## Script Example
 
 ````mdx
-<HtmlBlock unsafe>
+<HtmlBlock>
 
 ```html
-<div class="notification is-warning is-light">Trusted local demo.</div>
+<div id="demo" class="box">Waiting...</div>
 <script>
-  console.log('HtmlBlock unsafe script executed')
+  document.getElementById('demo').textContent = 'Script executed'
 </script>
 ```
 
 </HtmlBlock>
 ````
-
-Unsafe mode injects the HTML fragment as-is. Use it only for trusted local documents when the user explicitly wants raw HTML, scripts, embeds, or custom client-side behavior.
 
 ## Children Rule
 
@@ -50,7 +41,6 @@ Use a fenced `html` code block inside `HtmlBlock`. Do not write JSX children suc
 
 ## Rules
 
-- Use semantic components when they fit.
-- Use safe `HtmlBlock` for small Bulma snippets copied or adapted from Bulma examples.
-- Use `unsafe` only when raw scripts or unsanitized HTML are intentionally required.
-- Do not use `HtmlBlock` for full pages with `<html>`, `<head>`, or `<body>`.
+- `HtmlBlock` injects children as raw HTML.
+- Use it for Bulma HTML snippets, embeds, small scripts, and custom visual fragments.
+- Do not include full-page wrappers such as `<html>`, `<head>`, or `<body>`.

@@ -61,7 +61,7 @@ This keeps data content-like and avoids unnecessary MDX JavaScript expressions.
 </HtmlBlock>
 ````
 
-Use `<HtmlBlock unsafe>` only for trusted local content that intentionally needs raw scripts, embeds, or unsanitized HTML.
+`HtmlBlock` injects raw HTML. Use it for Bulma snippets, embeds, scripts, and custom visual fragments.
 
 Bulma JSX is also allowed for small fragments:
 

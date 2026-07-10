@@ -4,25 +4,20 @@ Use `Columns` for side-by-side Markdown prose. It maps to Bulma `columns` / `col
 
 ## Props
 
-`Columns`:
-
-| Prop | Required | Values |
-|---|---:|---|
-| `cols` | no | integer `2` to `4`; layout hint |
+`Columns` has no props. Markdown children are allowed.
 
 `Column`:
 
 | Prop | Required | Values |
 |---|---:|---|
 | `title` | no | heading text |
-| `text` | no | plain text; Markdown children are preferred for formatted content |
 
 Markdown children are allowed.
 
 ## Example
 
 ```mdx
-<Columns cols={2}>
+<Columns>
 <Column title="Plain Markdown">
 
 - Portable

@@ -11,7 +11,6 @@ Use `Steps` and `Step` for procedures, workflows, checklists with order, or life
 | Prop | Required | Values |
 |---|---:|---|
 | `title` | no | step heading |
-| `text` | no | plain text; Markdown children are preferred for formatted content |
 
 Markdown children are allowed.
 

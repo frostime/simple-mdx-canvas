@@ -17,7 +17,7 @@ The reader of this skill is an external Agent. The Agent's job is to write compl
 - **Rendered artifact**: the `.html` file produced from the canvas document.
 - **Semantic component**: a registered MDX component such as `Chart`, `Callout`, `Table`, or `Grid`.
 - **Bulma JSX**: small JSX fragments in MDX that use Bulma CSS classes through React-style attributes, for example `className="box"`.
-- **HtmlBlock**: a registered component that renders an HTML fragment from children; safe mode sanitizes it, `unsafe` mode injects it as-is.
+- **HtmlBlock**: a registered component that injects raw HTML from fenced `html` children.
 
 ## Output Contract
 
@@ -76,8 +76,8 @@ Do not write:
 - `import` or `export` statements;
 - inline component definitions;
 - arbitrary JavaScript expressions beyond simple literal props such as `{2}` or `{true}`;
-- raw `<script>` or `<style>` tags outside `HtmlBlock unsafe`;
-- event handlers such as `onClick` outside `HtmlBlock unsafe`;
+- raw `<script>` or `<style>` tags outside `HtmlBlock` fenced children;
+- event handlers such as `onClick` outside `HtmlBlock` fenced children;
 - `javascript:` links;
 - unregistered component names.
 
@@ -107,7 +107,7 @@ High-frequency examples:
 Use `simple-mdx-canvas` when the user needs a visual single-page report, not a documentation site.
 </Callout>
 
-<Columns cols={2}>
+<Columns>
 <Column title="Option A">
 Markdown content for the first option.
 </Column>

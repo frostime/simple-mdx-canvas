@@ -156,7 +156,7 @@ MVP components:
 - `Steps` / `Step`
 - `Figure`
 - `PromptBox` — copy-oriented block for prompts, commands, and agent instructions; text must wrap by default
-- `HtmlBlock` — safe or trusted raw HTML fragment for small Bulma-based snippets
+- `HtmlBlock` — raw HTML fragment for Bulma snippets, embeds, and scripts
 
 The component set is deliberately small. Markdown remains the default representation; components are used only where they improve structure, visualization, or presentation value.
 

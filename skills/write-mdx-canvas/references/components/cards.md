@@ -11,7 +11,6 @@ Use `Cards` and `Card` for grouped concepts, options, modules, or short summarie
 | Prop | Required | Values |
 |---|---:|---|
 | `title` | no | card heading |
-| `text` | no | plain text; Markdown children are preferred for formatted content |
 
 Markdown children are allowed.
 

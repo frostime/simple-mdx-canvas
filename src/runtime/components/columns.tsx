@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-export function Columns({ children }: { cols?: number; children: ReactNode }) {
+export function Columns({ children }: { children: ReactNode }) {
   return <div className="columns">{children}</div>
 }
 
