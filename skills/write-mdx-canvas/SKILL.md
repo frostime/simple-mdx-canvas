@@ -16,7 +16,8 @@ The reader of this skill is an external Agent. The Agent's job is to write compl
 - **Canvas document**: the `.mdx` file written for `simple-mdx-canvas`.
 - **Rendered artifact**: the `.html` file produced from the canvas document.
 - **Semantic component**: a registered MDX component such as `Chart`, `Callout`, `Table`, or `Grid`.
-- **Bulma JSX**: small JSX/HTML fragments in MDX that use Bulma CSS classes through React-style attributes, for example `className="box"`.
+- **Bulma JSX**: small JSX fragments in MDX that use Bulma CSS classes through React-style attributes, for example `className="box"`.
+- **HtmlBlock**: a registered component that renders an HTML fragment from children; safe mode sanitizes it, `unsafe` mode injects it as-is.
 
 ## Output Contract
 
@@ -64,7 +65,8 @@ A canvas document may use:
 - inline math with `$...$`;
 - display math with `$$...$$`;
 - registered semantic components;
-- limited Bulma JSX for simple visual structures.
+- limited Bulma JSX for simple visual structures;
+- `HtmlBlock` for small HTML fragments with Bulma classes.
 
 Components are optional tools. The Agent should choose the document structure from the user's task and source material.
 
@@ -73,8 +75,8 @@ Do not write:
 - `import` or `export` statements;
 - inline component definitions;
 - arbitrary JavaScript expressions beyond simple literal props such as `{2}` or `{true}`;
-- raw `<script>` or `<style>` tags;
-- event handlers such as `onClick`;
+- raw `<script>` or `<style>` tags outside `HtmlBlock unsafe`;
+- event handlers such as `onClick` outside `HtmlBlock unsafe`;
 - `javascript:` links;
 - unregistered component names.
 
@@ -123,6 +125,14 @@ Markdown content for the second option.
     { "option": "MDX Canvas", "complexity": 3 }
   ]'
 />
+
+<HtmlBlock>
+
+```html
+<div class="notification is-info is-light">Bulma HTML fragment</div>
+```
+
+</HtmlBlock>
 ```
 
 ## Reference Map
@@ -142,6 +152,7 @@ Read only what is needed:
 - `references/components/steps.md` — `Steps` / `Step`.
 - `references/components/figure.md` — `Figure`.
 - `references/components/prompt-box.md` — `PromptBox`.
+- `references/components/html-block.md` — `HtmlBlock`.
 - `references/components/bulma-jsx.md` — small Bulma class-based JSX fragments.
 
 If component availability is uncertain, run:

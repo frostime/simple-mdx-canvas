@@ -16,6 +16,7 @@ import {
   Step,
   Figure,
   PromptBox,
+  HtmlBlock,
   Table,
   Tags,
   Tag,
@@ -203,6 +204,17 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     schema: z.object({ title: z.string().optional(), text: z.string().optional() }),
     allowMarkdownChildren: true,
     renderMode: 'static',
+  },
+  {
+    name: 'HtmlBlock',
+    description: 'Render a sanitized or trusted raw HTML fragment that can use Bulma classes.',
+    component: HtmlBlock,
+    schema: z.object({ html: z.string().optional(), unsafe: z.boolean().optional() }),
+    allowMarkdownChildren: true,
+    renderMode: 'static',
+    examples: [
+      `<HtmlBlock>\n\n\`\`\`html\n<div class="notification is-info is-light">Bulma HTML</div>\n\`\`\`\n\n</HtmlBlock>`,
+    ],
   },
 ]
 

@@ -18,18 +18,19 @@ export async function validateDocument(
 ): Promise<CanvasValidationResult> {
   const errors: CanvasValidationError[] = []
   const source = document.content
+  const policySource = stripFencedCode(source)
   const trusted = options.trustedMdx === true
 
-  if (!trusted && !config.mdx.allowImports && importRegex.test(source)) {
+  if (!trusted && !config.mdx.allowImports && importRegex.test(policySource)) {
     errors.push(error(document.path, 'SMC_FORBIDDEN_IMPORT', 'MDX import is disabled in safe mode.', undefined, 'Move components into the registry instead of importing them in the document.'))
   }
-  if (!trusted && !config.mdx.allowExports && exportRegex.test(source)) {
+  if (!trusted && !config.mdx.allowExports && exportRegex.test(policySource)) {
     errors.push(error(document.path, 'SMC_FORBIDDEN_EXPORT', 'MDX export is disabled in safe mode.', undefined, 'Use frontmatter for document metadata and registry components for reusable UI.'))
   }
-  if (!config.mdx.allowRawHtml && (rawScriptRegex.test(source) || rawStyleRegex.test(source))) {
+  if (!config.mdx.allowRawHtml && (rawScriptRegex.test(policySource) || rawStyleRegex.test(policySource))) {
     errors.push(error(document.path, 'SMC_FORBIDDEN_RAW_HTML', 'Raw <script> or <style> tags are disabled.', undefined, 'Use registered components and themes instead.'))
   }
-  if (!trusted && (htmlEventHandlerRegex.test(source) || hrefJavascriptRegex.test(source))) {
+  if (!trusted && (htmlEventHandlerRegex.test(policySource) || hrefJavascriptRegex.test(policySource))) {
     errors.push(error(document.path, 'SMC_FORBIDDEN_INLINE_JS', 'Inline event handlers or javascript: links are disabled.', undefined, 'Move behavior into a registered component.'))
   }
 
@@ -105,6 +106,10 @@ function lineOf(source: string, index: number): number {
 
 function hasClosingTag(source: string, name: string, index: number): boolean {
   return source.slice(index).includes(`</${name}>`)
+}
+
+function stripFencedCode(source: string): string {
+  return source.replace(/^```[\s\S]*?^```/gm, '')
 }
 
 function parseAttributes(input: string): Record<string, unknown> {

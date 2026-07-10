@@ -10,7 +10,7 @@ A canvas document may combine these layers:
 |---|---|---|
 | GFM Markdown | ordinary prose, headings, lists, blockquotes, code, simple tables, links, images | Baseline content format. |
 | Math | inline or display equations | Use `$...$` and `$$...$$`. |
-| Registered components | charts, callouts, tables, grids, cards, tabs, figures, prompts | Props must match component schemas. |
+| Registered components | charts, callouts, tables, grids, cards, tabs, figures, prompts, HTML fragments | Props must match component schemas. |
 | Bulma JSX | small one-off visual blocks using Bulma CSS classes | Use `className`; avoid scripts, styles, and event handlers. |
 
 ## Available Visual Capabilities
@@ -28,7 +28,8 @@ A canvas document may combine these layers:
 | Ordered workflow or procedure | `Steps` / `Step` |
 | Image with caption/source | `Figure` |
 | Copy-oriented prompt, command, or instruction block | `PromptBox` |
-| Small Bulma CSS block not covered by a component | Bulma JSX |
+| Small HTML fragment using Bulma classes | `HtmlBlock` |
+| Small Bulma CSS block written as JSX | Bulma JSX |
 
 ## Component Use Is Optional
 
@@ -49,9 +50,23 @@ data='[
 
 This keeps data content-like and avoids unnecessary MDX JavaScript expressions.
 
-## Bulma JSX Scope
+## HtmlBlock and Bulma JSX Scope
 
-Bulma JSX is allowed for small fragments:
+`HtmlBlock` is available when a small HTML fragment is easier than JSX:
+
+````mdx
+<HtmlBlock>
+
+```html
+<div class="notification is-info is-light">Bulma HTML fragment</div>
+```
+
+</HtmlBlock>
+````
+
+Use `<HtmlBlock unsafe>` only for trusted local content that intentionally needs raw scripts, embeds, or unsanitized HTML.
+
+Bulma JSX is also allowed for small fragments:
 
 ```mdx
 <div className="notification is-info is-light">
@@ -59,4 +74,4 @@ Bulma JSX is allowed for small fragments:
 </div>
 ```
 
-The renderer owns the full HTML shell. The canvas document should not include `<html>`, `<head>`, `<body>`, `<script>`, or `<style>`.
+The renderer owns the full HTML shell. The canvas document should not include `<html>`, `<head>`, or `<body>`.

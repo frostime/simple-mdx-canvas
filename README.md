@@ -90,6 +90,7 @@ Math support is enabled by default through `remark-math`, `rehype-katex`, and em
 - `Steps` / `Step`
 - `Figure`
 - `PromptBox` — copy-oriented prompt block; long text and fenced code wrap by default
+- `HtmlBlock` — safe or trusted raw HTML fragment for small Bulma-based snippets
 
 ## Example
 

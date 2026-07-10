@@ -127,6 +127,7 @@ src/runtime/components/
   steps.tsx
   figure.tsx
   prompt-box.tsx
+  html-block.tsx
   index.ts
 ```
 
@@ -142,7 +143,8 @@ Built-in purposes:
 - `Tabs`: grouped variants;
 - `Steps`: process explanation;
 - `Figure`: image with caption;
-- `PromptBox`: copy-oriented prompt/command block.
+- `PromptBox`: copy-oriented prompt/command block;
+- `HtmlBlock`: safe or trusted raw HTML fragment for small Bulma-based snippets.
 
 `Chart` accepts a constrained schema instead of exposing the full Chart.js API. This keeps agent output stable while reusing a mature chart runtime.
 
