@@ -3,11 +3,20 @@ import type { z } from 'zod'
 
 export type CanvasThemeName = 'default' | 'academic' | 'compact' | string
 
+export type DataDeclaration = {
+  $src?: string
+  $inline?: unknown
+  $derive?: Record<string, string>
+}
+
+export type DataDeclarations = Record<string, DataDeclaration>
+
 export type CanvasFrontmatter = {
   title?: string
   description?: string
   theme?: CanvasThemeName
   layout?: 'document' | 'report'
+  data?: DataDeclarations
 }
 
 export type CanvasConfig = {
