@@ -2,6 +2,23 @@
 title: "simple-mdx-canvas Example Report"
 description: "A single-page MDX canvas generated from Markdown plus Bulma-based components."
 theme: "academic"
+data:
+  componentRows:
+    $inline:
+      - { component: "Chart", purpose: "Visualize numeric data", basis: "Chart.js" }
+      - { component: "Table", purpose: "Show structured rows", basis: "Bulma table" }
+      - { component: "Tag", purpose: "Compact labels", basis: "Bulma tag" }
+      - { component: "Grid", purpose: "Dense layout", basis: "Bulma grid" }
+  complexityCfg:
+    $inline:
+      type: bar
+      data:
+        labels: [Markdown, MDX Canvas, Document site, Full React app]
+        datasets:
+          - { label: Complexity, data: [1, 3, 7, 9] }
+      options:
+        scales:
+          y: { beginAtZero: true }
 ---
 
 # simple-mdx-canvas Example Report
@@ -60,16 +77,11 @@ Use raw Bulma HTML only when a semantic component does not exist yet.
 </Grid>
 
 <Table
+  from="componentRows"
   columns='[
     { "key": "component", "label": "Component" },
     { "key": "purpose", "label": "Purpose" },
     { "key": "basis", "label": "Basis" }
-  ]'
-  data='[
-    { "component": "Chart", "purpose": "Visualize numeric data", "basis": "Chart.js" },
-    { "component": "Table", "purpose": "Show structured rows", "basis": "Bulma table" },
-    { "component": "Tag", "purpose": "Compact labels", "basis": "Bulma tag" },
-    { "component": "Grid", "purpose": "Dense layout", "basis": "Bulma grid" }
   ]'
 />
 
@@ -96,20 +108,7 @@ $$
 <Chart
   title="Output path complexity"
   description="Illustrative scale: lower is simpler."
-  config='{
-    "type": "bar",
-    "data": {
-      "labels": ["Markdown", "MDX Canvas", "Document site", "Full React app"],
-      "datasets": [
-        { "label": "Complexity", "data": [1, 3, 7, 9] }
-      ]
-    },
-    "options": {
-      "scales": {
-        "y": { "beginAtZero": true }
-      }
-    }
-  }'
+  from="complexityCfg"
 />
 
 ## Code highlighting

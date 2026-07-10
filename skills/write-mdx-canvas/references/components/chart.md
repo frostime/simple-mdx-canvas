@@ -6,7 +6,8 @@ Use `Chart` to render a Chart.js chart. The component passes the `config` prop t
 
 | Prop | Required | Values |
 |---|---:|---|
-| `config` | yes | Chart.js configuration object as JSON string or object expression |
+| `config` | one of `config`/`from` | Chart.js configuration object as JSON string or object expression |
+| `from` | one of `config`/`from` | name of a frontmatter `data:` declaration holding a whole Chart.js config; see `references/data-sources.md` |
 | `title` | no | chart title displayed above the chart |
 | `description` | no | short supporting text displayed above the chart |
 
