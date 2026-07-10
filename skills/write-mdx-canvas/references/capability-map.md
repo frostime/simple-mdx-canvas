@@ -1,0 +1,62 @@
+# MDX Canvas Capability Map
+
+This file describes what `simple-mdx-canvas` can express. It does not prescribe a document outline. The Agent should choose structure from the user's task, source material, and audience.
+
+## Content Layers
+
+A canvas document may combine these layers:
+
+| Layer | Use for | Notes |
+|---|---|---|
+| GFM Markdown | ordinary prose, headings, lists, blockquotes, code, simple tables, links, images | Baseline content format. |
+| Math | inline or display equations | Use `$...$` and `$$...$$`. |
+| Registered components | charts, callouts, tables, grids, cards, tabs, figures, prompts | Props must match component schemas. |
+| Bulma JSX | small one-off visual blocks using Bulma CSS classes | Use `className`; avoid scripts, styles, and event handlers. |
+
+## Available Visual Capabilities
+
+| Expression need | Available capability |
+|---|---|
+| Emphasized note, risk, definition, summary, or decision | `Callout` |
+| Numeric chart: bar, line, pie, scatter | `Chart` |
+| Structured rows from JSON-like data | `Table` |
+| Side-by-side content | `Columns` / `Column` |
+| Dense region layout | `Grid` / `Cell` |
+| Grouped concepts, options, modules, or cards | `Cards` / `Card` |
+| Compact labels, states, categories | `Tags` / `Tag` |
+| Alternative views, platforms, modes, versions | `Tabs` / `Tab` |
+| Ordered workflow or procedure | `Steps` / `Step` |
+| Image with caption/source | `Figure` |
+| Copy-oriented prompt, command, or instruction block | `PromptBox` |
+| Small Bulma CSS block not covered by a component | Bulma JSX |
+
+## Component Use Is Optional
+
+A valid canvas document can be mostly Markdown. Components are available tools, not mandatory sections.
+
+Use a component when it carries information better than plain Markdown for the current task. Use Markdown when it is clearer, shorter, or less fragile.
+
+## Data Props
+
+For JSON-backed props such as `Chart.data`, `Table.data`, and `Table.columns`, prefer single-quoted JSON strings:
+
+```mdx
+data='[
+  { "name": "A", "value": 1 },
+  { "name": "B", "value": 2 }
+]'
+```
+
+This keeps data content-like and avoids unnecessary MDX JavaScript expressions.
+
+## Bulma JSX Scope
+
+Bulma JSX is allowed for small fragments:
+
+```mdx
+<div className="notification is-info is-light">
+  <strong>Note:</strong> This block uses Bulma CSS classes directly.
+</div>
+```
+
+The renderer owns the full HTML shell. The canvas document should not include `<html>`, `<head>`, `<body>`, `<script>`, or `<style>`.
