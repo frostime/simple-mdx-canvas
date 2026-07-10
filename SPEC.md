@@ -90,7 +90,34 @@ title: string
 description?: string
 theme?: string
 layout?: document | report
+data?: DataDeclarations
 ```
+
+`data` declares named data values that components can reuse via a `from` prop, so the same rows or chart configuration do not have to be duplicated across `<Table>` and `<Chart>`. Data is resolved at build time and embedded into the single HTML artifact; the rendered page does not fetch data at runtime.
+
+Each declaration under `data` is an object with exactly-one-of `$src` / `$inline`, and an optional `$derive`:
+
+```yaml
+data:
+  rows:
+    $src: data/rows.json        # path relative to the .mdx file
+  costCfg:
+    $inline:                     # any YAML literal
+      type: bar
+      data:
+        labels: [A, B]
+        datasets:
+          - { label: cost, data: [3, 5] }
+  counts:
+    $inline:
+      - { name: a, count: 3 }
+    $derive:                      # gated by --trusted-mdx
+      onlyCounts: "r => r.map(x => x.count)"
+```
+
+`$derive` is a map of `{ name: "<lambda string>" }` where each lambda is `(input) => <plain value>`, evaluated synchronously in a constrained vm sandbox with a 200ms timeout. It is **not** an adversarial sandbox; derive stays gated behind `--trusted-mdx` and is not enabled in default agent workflows. Without `--trusted-mdx`, any `$derive` produces `SMC_FORBIDDEN_DATA_TRANSFORM`.
+
+Consuming components accept a `from` string prop instead of their native data prop. A component declares which prop `from` resolves into (`Table` → `data`, `Chart` → `config`). `from` supports a small projection DSL: `X` (whole value), `X.f.g` (object path), `X[i]` (array index), `X[].f.g` (array extraction with null padding so output length equals source length). `from` and the native data prop are mutually exclusive.
 
 The Markdown baseline is GFM-compatible Markdown. Fenced code blocks are syntax-highlighted when a language is provided. Plain text and Markdown-like code fences wrap by default. Math notation is enabled by default with `$...$` inline math and `$$...$$` display math. Components are written as JSX-like MDX tags but are restricted by the component registry.
 
@@ -225,6 +252,14 @@ Required error categories:
 - `SMC_FORBIDDEN_CHILDREN`
 - `SMC_MISSING_ASSET` (planned)
 - `SMC_UNKNOWN_THEME` (planned)
+- `SMC_UNKNOWN_DATA`
+- `SMC_DATA_REDECLARED`
+- `SMC_INVALID_DATA_NAME`
+- `SMC_INVALID_PROJECTION`
+- `SMC_FORBIDDEN_DATA_TRANSFORM`
+- `SMC_DATA_TRANSFORM_ERROR`
+- `SMC_DATA_SOURCE_CONFLICT`
+- `SMC_INVALID_DATA_SOURCE`
 
 Error output should include file, line, component, prop, message, and fix guidance when possible.
 
@@ -234,6 +269,7 @@ Default mode treats MDX as content, not code.
 
 - MDX documents are restricted.
 - Component implementations are trusted local code.
+- Frontmatter `data:` declarations are resolved at build time; `$inline` and `$src` are plain data. `$derive` evaluates a string lambda and is gated by `--trusted-mdx`; its sandbox prevents accidental host access and limits execution time but is not an adversarial sandbox.
 - Full MDX power can be enabled with `--trusted-mdx`, but agent workflows should not use it by default.
 
 ## 13. MVP Scope

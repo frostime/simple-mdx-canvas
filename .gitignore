@@ -3,3 +3,5 @@ dist/
 *.html
 .DS_Store
 *.log
+
+.pi-input.md

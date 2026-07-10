@@ -25,6 +25,7 @@
     "render:example": "node dist/cli.js render examples/report.mdx -o examples/report.html",
     "serve:example": "node dist/cli.js serve examples/report.mdx --port 4321",
     "check": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test test/*.test.ts",
     "prepack": "npm run build",
     "clean": "node scripts/clean.mjs"
   },

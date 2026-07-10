@@ -47,6 +47,24 @@ config='{ "type": "bar", "data": { "labels": ["A", "B"], "datasets": [{ "label":
 
 This keeps data content-like and avoids unnecessary MDX JavaScript expressions.
 
+## Reusable Data Sources
+
+To reuse the same rows or chart configuration across multiple components, declare them once in frontmatter `data:` and reference by `from`. See `data-sources.md` for the full contract.
+
+```mdx
+---
+data:
+  rows:
+    $inline:
+      - { name: "A", value: 1 }
+      - { name: "B", value: 2 }
+---
+
+<Table from="rows" columns='[{"key":"name","label":"Name"},{"key":"value","label":"Value"}]' />
+```
+
+Data is resolved at build time and embedded in the HTML; the page does not fetch at runtime. `$derive` requires `--trusted-mdx` and is not part of the default safe surface.
+
 ## HtmlBlock and Bulma JSX Scope
 
 `HtmlBlock` is available when a small HTML fragment is easier than JSX:

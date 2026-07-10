@@ -29,7 +29,7 @@ Validator
 
 ### Document
 
-Represents one `.mdx` input file and its frontmatter.
+Represents one `.mdx` input file and its frontmatter, including optional `data:` declarations resolved at build time by `document-data.ts`.
 
 ### Component Registry
 
@@ -144,7 +144,9 @@ Built-in purposes:
 - `PromptBox`: copy-oriented prompt/command block;
 - `HtmlBlock`: raw HTML fragment for Bulma snippets, embeds, and scripts.
 
-`Chart` accepts a Chart.js configuration object. The component stays deep by delegating chart semantics to Chart.js instead of inventing a smaller parallel chart API.
+`Chart` accepts a Chart.js configuration object. The component stays deep by delegating chart semantics to Chart.js instead of inventing a smaller parallel chart API. Both `Chart` and `Table` accept a `from` prop resolved from frontmatter `data:` declarations; `manifest.dataProp` declares which native prop the resolved value is injected into, so the data-source mechanism is general without each component implementing it.
+
+Frontmatter data sources live in `src/core/document-data.ts`, a deep module exposing only `resolveDocumentData` and `resolveFrom`. Source resolution (`$src` file load, `$inline` literal), identifier and namespace checks, the `$derive` sandbox, and the projection DSL parser are private to it. Both validate and render call the same two functions, so data semantics are defined once.
 
 `Columns` is deliberately shallow visually: it arranges children but does not add borders, backgrounds, or padding. Visual emphasis belongs in child components such as `Card`, `Callout`, or `Figure`.
 
@@ -159,7 +161,7 @@ Validation precedes evaluation. It performs:
 
 The validator emits stable error codes for agent repair loops.
 
-Known MVP limitation: prop extraction is intentionally conservative and does not implement a full MDX AST attribute evaluator. That is acceptable for the initial safe subset but should be upgraded later by inspecting MDX AST nodes directly.
+Known MVP limitation: prop extraction for the existing component schemas uses a conservative regex attribute scan. The `from` data-source path resolves through the mdast AST (via `@mdx-js/mdx`'s processor) for byte-exact source spans, so render-time `from` splicing is precise. Migrating the remaining regex prop extraction onto mdast is future work.
 
 ## 9. Theme Design
 
@@ -205,7 +207,7 @@ The implementation follows the code-quality rule used by the bundled engineering
 
 High-value next steps:
 
-1. Replace regex-based JSX prop extraction with MDX AST inspection.
+1. Migrate the remaining regex-based JSX prop extraction (used by validate for non-`from` props) onto mdast; render already uses mdast for `from` splicing.
 2. Add asset existence validation for `Figure`.
 3. Add real local user component example.
 4. Add optional self-contained asset bundling.

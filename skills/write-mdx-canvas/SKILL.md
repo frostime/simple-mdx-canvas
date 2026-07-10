@@ -81,6 +81,8 @@ Do not write:
 - `javascript:` links;
 - unregistered component names.
 
+The `from` prop on `Table` / `Chart` is a safe string literal that references a frontmatter `data:` declaration; it is allowed in safe mode. `$derive` under frontmatter `data:` evaluates JavaScript and requires `--trusted-mdx`; do not use it in default agent workflows.
+
 ## Bulma JSX Rule
 
 The rendered page includes Bulma CSS. The Agent may use small JSX fragments with Bulma classes when a semantic component is too restrictive.
@@ -156,6 +158,7 @@ Read only what is needed:
 - `references/components/prompt-box.md` — `PromptBox`.
 - `references/components/html-block.md` — `HtmlBlock`.
 - `references/components/bulma-jsx.md` — small Bulma class-based JSX fragments.
+- `references/data-sources.md` — frontmatter `data:` declarations and the `from` prop for reusing data across `Table` / `Chart`.
 
 If component availability is uncertain, run:
 

@@ -6,7 +6,8 @@ Use `Table` for JSON-backed structured rows rendered as a Bulma table.
 
 | Prop | Required | Values |
 |---|---:|---|
-| `data` | yes | JSON array string or array expression |
+| `data` | one of `data`/`from` | JSON array string or array expression |
+| `from` | one of `data`/`from` | name (or projection) of a frontmatter `data:` declaration; see `references/data-sources.md` |
 | `columns` | no | comma-separated string, string array, or array of `{ key, label?, align? }` objects |
 | `striped` | no | boolean; default `true` |
 | `bordered` | no | boolean; default `false` |
@@ -31,6 +32,22 @@ Children are not allowed. Use a self-closing tag.
   ]'
 />
 ```
+
+## Reusing Frontmatter Data
+
+```mdx
+---
+data:
+  rows:
+    $inline:
+      - { name: "Build", status: "pass" }
+      - { name: "Test", status: "pass" }
+---
+
+<Table from="rows" columns='[{"key":"name","label":"Name"},{"key":"status","label":"Status"}]' />
+```
+
+See `references/data-sources.md` for the full `data:` / `from` contract.
 
 ## Compact Example
 

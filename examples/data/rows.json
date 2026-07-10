@@ -1,0 +1,5 @@
+[
+  { "component": "Chart", "purpose": "Visualize data", "basis": "Chart.js" },
+  { "component": "Table", "purpose": "Show rows", "basis": "Bulma" },
+  { "component": "Grid", "purpose": "Dense layout", "basis": "Bulma" }
+]
