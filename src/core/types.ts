@@ -52,6 +52,9 @@ export type CanvasComponentManifest<Props = unknown> = {
   allowMarkdownChildren?: boolean
   renderMode?: 'static' | 'hydrated'
   examples?: string[]
+  // When set, the component accepts a `from` prop resolved from frontmatter
+  // data; the resolved value is injected under this prop name before schema.
+  dataProp?: string
 }
 
 export type CanvasRegistry = {

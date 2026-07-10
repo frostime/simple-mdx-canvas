@@ -42,17 +42,23 @@ const jsonObjectString = z.string().refine((value) => {
 export const builtInManifests: CanvasComponentManifest<any>[] = [
   {
     name: 'Chart',
-    description: 'Render a Chart.js chart from an inline Chart.js configuration object.',
+    description: 'Render a Chart.js chart from an inline Chart.js configuration object, or from a frontmatter data source via from.',
     component: Chart,
     schema: z.object({
       title: z.string().optional(),
       description: z.string().optional(),
-      config: z.union([jsonObjectString, z.record(z.unknown())]),
+      config: z.union([jsonObjectString, z.record(z.unknown())]).optional(),
+      from: z.string().optional(),
+    }).refine((v) => Boolean(v.config) || Boolean(v.from), {
+      message: 'Chart requires either config or from.',
+      path: ['config'],
     }),
     allowMarkdownChildren: false,
     renderMode: 'hydrated',
+    dataProp: 'config',
     examples: [
       `<Chart config='{ "type": "bar", "data": { "labels": ["A"], "datasets": [{ "label": "Value", "data": [3] }] } }' />`,
+      `<Chart from="costCfg" />`,
     ],
   },
   {
@@ -130,10 +136,11 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
 
   {
     name: 'Table',
-    description: 'Render a Bulma table from JSON rows.',
+    description: 'Render a Bulma table from JSON rows, or from a frontmatter data source via from.',
     component: Table,
     schema: z.object({
-      data: z.union([jsonArrayString, z.array(z.record(z.unknown()))]),
+      data: z.union([jsonArrayString, z.array(z.record(z.unknown()))]).optional(),
+      from: z.string().optional(),
       columns: z.union([
         z.string(),
         z.array(z.union([
@@ -150,11 +157,16 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
       narrow: z.boolean().optional(),
       hoverable: z.boolean().optional(),
       fullwidth: z.boolean().optional(),
+    }).refine((v) => Boolean(v.data) || Boolean(v.from), {
+      message: 'Table requires either data or from.',
+      path: ['data'],
     }),
     allowMarkdownChildren: false,
     renderMode: 'static',
+    dataProp: 'data',
     examples: [
       `<Table columns='["name","status"]' data='[{"name":"Build","status":"pass"}]' />`,
+      `<Table from="rows" columns='["name","status"]' />`,
     ],
   },
   {

@@ -3,6 +3,7 @@ import path from 'node:path'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { evaluate } from '@mdx-js/mdx'
+import { createProcessor } from '@mdx-js/mdx'
 import * as jsxRuntime from 'react/jsx-runtime'
 import { loadConfig } from './config.js'
 import { loadDocument } from './document.js'
@@ -12,6 +13,8 @@ import { loadChartJsScript, loadThemeCss } from './theme.js'
 import { rehypePluginsFor, remarkPluginsFor } from './mdx-options.js'
 import { CanvasValidationException } from './errors.js'
 import { buildHtmlShell } from '../runtime/html-shell.js'
+import { resolveDocumentData, resolveFrom } from './document-data.js'
+import type { CanvasRegistry } from './types.js'
 import type { RenderOptions } from './types.js'
 
 export async function renderToHtml(options: RenderOptions): Promise<{ html: string; output?: string }> {
@@ -24,11 +27,13 @@ export async function renderToHtml(options: RenderOptions): Promise<{ html: stri
   const theme = options.theme ?? document.frontmatter.theme ?? config.theme
 
   if (options.validate !== false) {
-    const result = await validateDocument(document, registry, config, { trustedMdx: options.trustedMdx })
+    const result = await validateDocument(document, registry, config, { trustedMdx: options.trustedMdx, cwd })
     if (!result.ok) throw new CanvasValidationException(result.errors)
   }
 
-  const evaluated = await evaluate(document.content, {
+  const outputSource = await resolveDataSources(document, registry, config)
+
+  const evaluated = await evaluate(outputSource, {
     ...(jsxRuntime as any),
     remarkPlugins: remarkPluginsFor(config) as any,
     rehypePlugins: rehypePluginsFor(config) as any,
@@ -57,4 +62,90 @@ export async function renderToHtml(options: RenderOptions): Promise<{ html: stri
   }
 
   return { html }
+}
+
+// resolveDataSources returns the document source with each consumer component's
+// `from="X"` attribute spliced into `dataProp={...resolved JSON...}`. Data is
+// resolved at build time (P1) and embedded into the single HTML artifact; no
+// runtime fetch. mdast positions give byte-exact source spans, so only the
+// `from="..."` token is replaced and everything else — whitespace, other
+// attributes, fenced code — stays untouched. Splices are applied right-to-left
+// so earlier offsets remain valid.
+async function resolveDataSources(
+  document: { path: string; content: string; frontmatter: { data?: unknown } },
+  registry: CanvasRegistry,
+  config: Awaited<ReturnType<typeof loadConfig>>,
+): Promise<string> {
+  const data = await resolveDocumentData(document.frontmatter as never, {
+    cwd: '',
+    docDir: path.dirname(document.path),
+    trustedMdx: true,
+    file: document.path,
+  })
+  const consumers = new Map<string, string>()
+  for (const [name, manifest] of registry.manifests) {
+    if (manifest.dataProp) consumers.set(name, manifest.dataProp)
+  }
+  if (consumers.size === 0 || data.data.size === 0) return document.content
+
+  const elements = await extractElements(document.content, config)
+
+  const splices: { start: number; end: number; replacement: string }[] = []
+  for (const el of elements) {
+    const dataProp = consumers.get(el.name)
+    if (!dataProp) continue
+    for (const attr of el.attributes) {
+      if (attr.name !== 'from') continue
+      if (typeof attr.value !== 'string') continue
+      const resolved = resolveFrom(attr.value, data.data)
+      if (!resolved.ok) return document.content // validate should have caught this
+      // Splice as a JSX expression container: JSON output is a valid JS literal.
+      const replacement = `${dataProp}={${JSON.stringify(resolved.value)}}`
+      splices.push({ start: attr.start, end: attr.end, replacement })
+    }
+  }
+  if (splices.length === 0) return document.content
+
+  splices.sort((a, b) => b.start - a.start)
+  let out = document.content
+  for (const s of splices) out = out.slice(0, s.start) + s.replacement + out.slice(s.end)
+  return out
+}
+
+async function extractElements(
+  source: string,
+  config: Awaited<ReturnType<typeof loadConfig>>,
+): Promise<Array<{ name: string; attributes: Array<{ name: string; value: unknown; start: number; end: number }> }>> {
+  const proc = createProcessor({ remarkPlugins: remarkPluginsFor(config) as any })
+  const tree = proc.parse(source) as { children?: unknown[] }
+  const out: Array<{ name: string; attributes: Array<{ name: string; value: unknown; start: number; end: number }> }> = []
+  walk(tree.children ?? [], (node: any) => {
+    if (node.type !== 'mdxJsxFlowElement' && node.type !== 'mdxJsxTextElement') return
+    if (!node.name) return
+    const attrs = (node.attributes ?? []).map((a: any) => ({
+      name: a.name ?? '',
+      value: attrValue(a.value),
+      start: a.position?.start?.offset ?? 0,
+      end: a.position?.end?.offset ?? 0,
+    }))
+    out.push({ name: node.name, attributes: attrs })
+  })
+  return out
+}
+
+function attrValue(value: unknown): unknown {
+  if (value == null) return null
+  if (typeof value === 'string') return value
+  if (typeof value === 'object' && (value as { type?: string }).type === 'mdxJsxAttributeValueExpression') {
+    const raw = (value as { value?: unknown }).value
+    return typeof raw === 'string' ? raw : undefined
+  }
+  return undefined
+}
+
+function walk(nodes: unknown[], visit: (node: any) => void): void {
+  for (const node of nodes as any[]) {
+    visit(node)
+    if (node && typeof node === 'object' && Array.isArray(node.children)) walk(node.children, visit)
+  }
 }
