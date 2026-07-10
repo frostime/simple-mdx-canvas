@@ -7,7 +7,7 @@ Use `Table` for JSON-backed structured rows rendered as a Bulma table.
 | Prop | Required | Values |
 |---|---:|---|
 | `data` | yes | JSON array string or array expression |
-| `columns` | no | JSON string array, string array, or comma-separated string |
+| `columns` | no | comma-separated string, string array, or array of `{ key, label?, align? }` objects |
 | `striped` | no | boolean; default `true` |
 | `bordered` | no | boolean; default `false` |
 | `narrow` | no | boolean; default `false` |
@@ -20,7 +20,11 @@ Children are not allowed. Use a self-closing tag.
 
 ```mdx
 <Table
-  columns='["component", "purpose", "basis"]'
+  columns='[
+    { "key": "component", "label": "Component" },
+    { "key": "purpose", "label": "Purpose" },
+    { "key": "basis", "label": "Basis" }
+  ]'
   data='[
     { "component": "Chart", "purpose": "Visualize numeric data", "basis": "Chart.js" },
     { "component": "Table", "purpose": "Show structured rows", "basis": "Bulma table" }
@@ -38,4 +42,7 @@ Children are not allowed. Use a self-closing tag.
 
 - Use `Table` when rows come from structured data or exact values matter.
 - Use normal GFM tables for small prose comparisons.
+- Use string columns when raw object keys are good enough.
+- Use object columns when the visible label or alignment should differ from the data key.
+- `align` may be `left`, `center`, or `right`.
 - Keep object keys stable across rows.

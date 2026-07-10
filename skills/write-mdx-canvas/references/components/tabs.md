@@ -39,4 +39,4 @@ smc validate report.mdx
 
 - Use tabs for alternatives, not for hiding essential sequential content.
 - Keep tab labels short.
-- If all panels must be read in order, use headings or `Steps` instead.
+- If all panels must be read in order, use headings or a Markdown ordered list instead.

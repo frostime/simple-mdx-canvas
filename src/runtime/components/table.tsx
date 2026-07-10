@@ -1,5 +1,11 @@
 import React from 'react'
 
+type TableColumn = {
+  key: string
+  label: string
+  align?: 'left' | 'center' | 'right'
+}
+
 function parseJsonArray(value: unknown): Array<Record<string, unknown>> {
   if (Array.isArray(value)) return value as Array<Record<string, unknown>>
   if (typeof value !== 'string') return []
@@ -12,17 +18,35 @@ function parseJsonArray(value: unknown): Array<Record<string, unknown>> {
   }
 }
 
-function parseColumns(value: unknown, rows: Array<Record<string, unknown>>): string[] {
-  if (Array.isArray(value)) return value.map(String)
+function parseColumns(value: unknown, rows: Array<Record<string, unknown>>): TableColumn[] {
+  if (Array.isArray(value)) return value.map(toColumn).filter(isTableColumn)
   if (typeof value === 'string' && value.trim()) {
     try {
       const parsed = JSON.parse(value) as unknown
-      if (Array.isArray(parsed)) return parsed.map(String)
+      if (Array.isArray(parsed)) return parsed.map(toColumn).filter(isTableColumn)
     } catch {
-      return value.split(',').map((item) => item.trim()).filter(Boolean)
+      return value.split(',').map((item) => toColumn(item.trim())).filter(isTableColumn)
     }
   }
-  return rows[0] ? Object.keys(rows[0]) : []
+  return rows[0] ? Object.keys(rows[0]).map((key) => ({ key, label: key })) : []
+}
+
+function isTableColumn(value: TableColumn | undefined): value is TableColumn {
+  return Boolean(value)
+}
+
+function toColumn(value: unknown): TableColumn | undefined {
+  if (typeof value === 'string' && value) return { key: value, label: value }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined
+
+  const raw = value as Record<string, unknown>
+  if (typeof raw.key !== 'string' || !raw.key) return undefined
+
+  return {
+    key: raw.key,
+    label: typeof raw.label === 'string' && raw.label ? raw.label : raw.key,
+    align: raw.align === 'center' || raw.align === 'right' || raw.align === 'left' ? raw.align : undefined,
+  }
 }
 
 function formatCell(value: unknown): string {
@@ -31,9 +55,15 @@ function formatCell(value: unknown): string {
   return String(value)
 }
 
+function alignClass(align: TableColumn['align']): string | undefined {
+  if (align === 'center') return 'has-text-centered'
+  if (align === 'right') return 'has-text-right'
+  return undefined
+}
+
 export type TableProps = {
   data: string | Array<Record<string, unknown>>
-  columns?: string | string[]
+  columns?: string | Array<string | TableColumn>
   striped?: boolean
   bordered?: boolean
   narrow?: boolean
@@ -59,11 +89,11 @@ export function Table({ data, columns, striped = true, bordered = false, narrow 
     <div className="table-container">
       <table className={className}>
         <thead>
-          <tr>{visibleColumns.map((column) => <th key={column}>{column}</th>)}</tr>
+          <tr>{visibleColumns.map((column) => <th key={column.key} className={alignClass(column.align)}>{column.label}</th>)}</tr>
         </thead>
         <tbody>
           {rows.map((row, rowIndex) => (
-            <tr key={rowIndex}>{visibleColumns.map((column) => <td key={column}>{formatCell(row[column])}</td>)}</tr>
+            <tr key={rowIndex}>{visibleColumns.map((column) => <td key={column.key} className={alignClass(column.align)}>{formatCell(row[column.key])}</td>)}</tr>
           ))}
         </tbody>
       </table>

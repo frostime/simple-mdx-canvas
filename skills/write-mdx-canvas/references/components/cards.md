@@ -34,4 +34,4 @@ Uses Bulma CSS variables plus small canvas-specific CSS.
 
 - Keep each card short.
 - Use `Cards` for peer items; use headings for sequential narrative.
-- Use `Steps` for ordered processes instead of cards.
+- Use Markdown ordered lists for ordered processes instead of cards.

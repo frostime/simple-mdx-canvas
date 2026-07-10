@@ -152,7 +152,6 @@ Read only what is needed:
 - `references/components/callout.md` — `Callout`.
 - `references/components/cards.md` — `Cards` / `Card`.
 - `references/components/tabs.md` — `Tabs` / `Tab`.
-- `references/components/steps.md` — `Steps` / `Step`.
 - `references/components/figure.md` — `Figure`.
 - `references/components/prompt-box.md` — `PromptBox`.
 - `references/components/html-block.md` — `HtmlBlock`.

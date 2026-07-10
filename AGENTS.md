@@ -24,7 +24,7 @@ Component design:
 - Prefer deep interfaces over shallow wrappers.
 - Do not invent a smaller parallel API over a mature underlying library.
 - `Chart` accepts Chart.js `config` and passes it through; renderer may fill missing theme defaults but must not override explicit config.
-- `HtmlBlock` uses children, safe by default, and `unsafe` for trusted raw HTML/JS.
+- `HtmlBlock` has no props and injects fenced `html` children as raw HTML/JS.
 
 Current project state: unpublished/pre-release. Do not preserve obsolete local APIs unless the user asks. If an interface is wrong, replace it and update examples/docs/skills.
 

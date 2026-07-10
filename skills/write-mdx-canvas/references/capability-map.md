@@ -25,7 +25,7 @@ A canvas document may combine these layers:
 | Grouped concepts, options, modules, or cards | `Cards` / `Card` |
 | Compact labels, states, categories | `Tags` / `Tag` |
 | Alternative views, platforms, modes, versions | `Tabs` / `Tab` |
-| Ordered workflow or procedure | `Steps` / `Step` |
+| Ordered workflow or procedure | Markdown ordered list |
 | Image with caption/source | `Figure` |
 | Copy-oriented prompt, command, or instruction block | `PromptBox` |
 | Small HTML fragment using Bulma classes | `HtmlBlock` |
@@ -39,7 +39,7 @@ Use a component when it carries information better than plain Markdown for the c
 
 ## Data Props
 
-For JSON-backed props such as `Chart.config`, `Table.data`, and `Table.columns`, prefer single-quoted JSON strings:
+For JSON-backed props such as `Chart.config`, `Table.data`, and object-form `Table.columns`, prefer single-quoted JSON strings:
 
 ```mdx
 config='{ "type": "bar", "data": { "labels": ["A", "B"], "datasets": [{ "label": "Value", "data": [1, 2] }] } }'

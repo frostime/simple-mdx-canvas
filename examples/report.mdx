@@ -60,7 +60,11 @@ Use raw Bulma HTML only when a semantic component does not exist yet.
 </Grid>
 
 <Table
-  columns='["component", "purpose", "basis"]'
+  columns='[
+    { "key": "component", "label": "Component" },
+    { "key": "purpose", "label": "Purpose" },
+    { "key": "basis", "label": "Basis" }
+  ]'
   data='[
     { "component": "Chart", "purpose": "Visualize numeric data", "basis": "Chart.js" },
     { "component": "Table", "purpose": "Show structured rows", "basis": "Bulma table" },
@@ -137,17 +141,9 @@ smc serve examples/report.mdx --port 4321 --open
 
 ## Recommended workflow
 
-<Steps>
-<Step title="Write the document">
-The agent writes one `.mdx` file using GFM Markdown and registered Bulma-based components.
-</Step>
-<Step title="Validate">
-The agent runs `smc validate report.mdx` and fixes any structured errors.
-</Step>
-<Step title="Render">
-The agent runs `smc render report.mdx -o report.html`.
-</Step>
-</Steps>
+1. Write one `.mdx` file using GFM Markdown and registered Bulma-based components.
+2. Run `smc validate report.mdx` and fix any structured errors.
+3. Run `smc render report.mdx -o report.html`.
 
 ## Reusable prompt
 

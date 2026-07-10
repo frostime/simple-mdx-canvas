@@ -124,7 +124,6 @@ src/runtime/components/
   callout.tsx
   cards.tsx
   tabs.tsx
-  steps.tsx
   figure.tsx
   prompt-box.tsx
   html-block.tsx
@@ -136,12 +135,11 @@ Built-in purposes:
 - `Chart`: thin Chart.js configuration pass-through;
 - `Columns`: pure Bulma columns layout;
 - `Grid`: Bulma fixed-grid layout;
-- `Table`: Bulma table from JSON rows;
+- `Table`: Bulma table from JSON rows with optional column labels and alignment;
 - `Tag`: Bulma tag for compact labels;
 - `Callout`: highlighted constraints or conclusions;
 - `Cards`: concept or option grouping;
 - `Tabs`: grouped variants;
-- `Steps`: process explanation;
 - `Figure`: image with caption;
 - `PromptBox`: copy-oriented prompt/command block;
 - `HtmlBlock`: raw HTML fragment for Bulma snippets, embeds, and scripts.

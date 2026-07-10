@@ -153,7 +153,6 @@ MVP components:
 - `Callout`
 - `Cards` / `Card`
 - `Tabs` / `Tab` — Bulma tabs markup with a minimal static-page switcher
-- `Steps` / `Step`
 - `Figure`
 - `PromptBox` — copy-oriented block for prompts, commands, and agent instructions; text must wrap by default
 - `HtmlBlock` — raw HTML fragment for Bulma snippets, embeds, and scripts

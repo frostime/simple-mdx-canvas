@@ -12,8 +12,6 @@ import {
   Card,
   Tabs,
   Tab,
-  Steps,
-  Step,
   Figure,
   PromptBox,
   HtmlBlock,
@@ -117,22 +115,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     renderMode: 'static',
   },
   {
-    name: 'Steps',
-    description: 'Container for ordered Step components.',
-    component: Steps,
-    schema: z.object({}),
-    allowMarkdownChildren: true,
-    renderMode: 'static',
-  },
-  {
-    name: 'Step',
-    description: 'A single process step.',
-    component: Step,
-    schema: z.object({ title: z.string().optional() }),
-    allowMarkdownChildren: true,
-    renderMode: 'static',
-  },
-  {
     name: 'Figure',
     description: 'Render an image with caption and source.',
     component: Figure,
@@ -152,7 +134,17 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Table,
     schema: z.object({
       data: z.union([jsonArrayString, z.array(z.record(z.unknown()))]),
-      columns: z.union([z.string(), z.array(z.string())]).optional(),
+      columns: z.union([
+        z.string(),
+        z.array(z.union([
+          z.string(),
+          z.object({
+            key: z.string(),
+            label: z.string().optional(),
+            align: z.enum(['left', 'center', 'right']).optional(),
+          }),
+        ])),
+      ]).optional(),
       striped: z.boolean().optional(),
       bordered: z.boolean().optional(),
       narrow: z.boolean().optional(),

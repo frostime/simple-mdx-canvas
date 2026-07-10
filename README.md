@@ -87,7 +87,6 @@ Math support is enabled by default through `remark-math`, `rehype-katex`, and em
 - `Callout`
 - `Cards` / `Card`
 - `Tabs` / `Tab`
-- `Steps` / `Step`
 - `Figure`
 - `PromptBox` — copy-oriented prompt block; long text and fenced code wrap by default
 - Fenced code blocks — statically highlighted when a language is provided; `text`, `txt`, `plaintext`, `md`, and `markdown` wrap by default
