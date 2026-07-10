@@ -92,7 +92,7 @@ theme?: string
 layout?: document | report
 ```
 
-The Markdown baseline is GFM-compatible Markdown. Fenced code blocks are syntax-highlighted when a language is provided. Math notation is enabled by default with `$...$` inline math and `$$...$$` display math. Components are written as JSX-like MDX tags but are restricted by the component registry.
+The Markdown baseline is GFM-compatible Markdown. Fenced code blocks are syntax-highlighted when a language is provided. Plain text and Markdown-like code fences wrap by default. Math notation is enabled by default with `$...$` inline math and `$$...$$` display math. Components are written as JSX-like MDX tags but are restricted by the component registry.
 
 ## 6. Component Policy
 

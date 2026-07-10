@@ -79,6 +79,16 @@ pre code.hljs {
   white-space: pre;
 }
 
+pre code.hljs.language-text,
+pre code.hljs.language-txt,
+pre code.hljs.language-plaintext,
+pre code.hljs.language-md,
+pre code.hljs.language-markdown {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 code.hljs {
   --canvas-highlight-text: #24292f;
   --canvas-highlight-comment: #6a737d;
@@ -173,7 +183,8 @@ code.hljs {
   overflow-wrap: anywhere;
 }
 
-.prompt-box-content :where(pre, code) {
+.prompt-box-content :where(pre, code),
+.prompt-box-content pre code.hljs {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   word-break: break-word;

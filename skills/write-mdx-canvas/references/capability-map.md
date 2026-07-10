@@ -8,7 +8,7 @@ A canvas document may combine these layers:
 
 | Layer | Use for | Notes |
 |---|---|---|
-| GFM Markdown | ordinary prose, headings, lists, blockquotes, fenced code, simple tables, links, images | Fenced code is syntax-highlighted when a language is provided. |
+| GFM Markdown | ordinary prose, headings, lists, blockquotes, fenced code, simple tables, links, images | Fenced code is syntax-highlighted when a language is provided; text/Markdown-like fences wrap by default. |
 | Math | inline or display equations | Use `$...$` and `$$...$$`. |
 | Registered components | charts, callouts, tables, grids, cards, tabs, figures, prompts, HTML fragments | Props must match component schemas. |
 | Bulma JSX | small one-off visual blocks using Bulma CSS classes | Use `className`; avoid scripts, styles, and event handlers. |
