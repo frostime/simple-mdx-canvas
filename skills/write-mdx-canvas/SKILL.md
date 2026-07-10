@@ -62,6 +62,7 @@ Do not run `serve` unless the user asks for live preview.
 A canvas document may use:
 
 - GFM headings, paragraphs, lists, task lists, blockquotes, tables, fenced code, links, and images;
+- syntax highlighting for fenced code blocks when a language is provided, for example ```` ```ts ````;
 - inline math with `$...$`;
 - display math with `$$...$$`;
 - registered semantic components;

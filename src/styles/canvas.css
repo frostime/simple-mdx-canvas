@@ -65,6 +65,102 @@ code {
   color: var(--bulma-code);
 }
 
+pre:has(code.hljs) {
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--bulma-border);
+  border-radius: var(--bulma-radius);
+}
+
+pre code.hljs {
+  display: block;
+  background: transparent;
+  color: var(--canvas-highlight-text, #24292f);
+  white-space: pre;
+}
+
+code.hljs {
+  --canvas-highlight-text: #24292f;
+  --canvas-highlight-comment: #6a737d;
+  --canvas-highlight-keyword: #d73a49;
+  --canvas-highlight-string: #032f62;
+  --canvas-highlight-title: #6f42c1;
+  --canvas-highlight-variable: #e36209;
+  --canvas-highlight-literal: #005cc5;
+  --canvas-highlight-section: #22863a;
+}
+
+[data-theme='dark'] code.hljs,
+[data-color-mode='dark'] code.hljs {
+  --canvas-highlight-text: #e6edf3;
+  --canvas-highlight-comment: #8b949e;
+  --canvas-highlight-keyword: #ff7b72;
+  --canvas-highlight-string: #a5d6ff;
+  --canvas-highlight-title: #d2a8ff;
+  --canvas-highlight-variable: #ffa657;
+  --canvas-highlight-literal: #79c0ff;
+  --canvas-highlight-section: #7ee787;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--canvas-highlight-comment);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: var(--canvas-highlight-keyword);
+}
+
+.hljs-string,
+.hljs-doctag,
+.hljs-regexp,
+.hljs-template-variable {
+  color: var(--canvas-highlight-string);
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-function .hljs-title {
+  color: var(--canvas-highlight-title);
+  font-weight: 600;
+}
+
+.hljs-variable,
+.hljs-attr,
+.hljs-attribute,
+.hljs-name,
+.hljs-tag {
+  color: var(--canvas-highlight-variable);
+}
+
+.hljs-literal,
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-built_in,
+.hljs-builtin-name {
+  color: var(--canvas-highlight-literal);
+}
+
+.hljs-type,
+.hljs-class .hljs-title,
+.hljs-selector-pseudo {
+  color: var(--canvas-highlight-section);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
 /* PromptBox is for prompts, commands, and agent instructions.
    It must wrap long text instead of forcing horizontal page overflow. */
 .prompt-box-content {

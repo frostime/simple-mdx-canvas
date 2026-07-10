@@ -7,7 +7,7 @@ The system is a thin single-page renderer, not a documentation framework.
 The implementation reuses mature ecosystem primitives:
 
 - MDX compiler for Markdown + JSX parsing and evaluation;
-- remark-gfm, remark-math, rehype-katex for GFM Markdown support;
+- remark-gfm, remark-math, rehype-katex, and rehype-highlight for GFM Markdown support, math, and fenced code highlighting;
 - React server rendering for HTML output;
 - Bulma CSS for stable visual primitives;
 - a local component registry for controlled MDX components;
