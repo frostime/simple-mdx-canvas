@@ -1,0 +1,67 @@
+---
+title: "Contract Feature Fixture"
+description: "Covers documented canvas features."
+theme: "default"
+---
+
+# Contract Feature Fixture
+
+- [x] GFM task item
+
+| Name | Value |
+| --- | ---: |
+| Markdown row | 7 |
+
+Inline math: $x^2 + y^2 = z^2$.
+
+$$
+\frac{a}{b}
+$$
+
+<Callout type="summary" title="Callout title">
+Callout body.
+</Callout>
+
+<Tags>
+<Tag color="success" light>Ready</Tag>
+</Tags>
+
+<Columns>
+<Column title="Column title">Column content.</Column>
+</Columns>
+
+<Grid columns={2}>
+<Cell>Grid content.</Cell>
+</Grid>
+
+<Cards>
+<Card title="Card title">Card content.</Card>
+</Cards>
+
+<Tabs>
+<Tab title="First tab">First panel.</Tab>
+<Tab title="Second tab">Second panel.</Tab>
+</Tabs>
+
+<Figure src="./assets/figure.png" alt="Figure asset" caption="Figure caption" />
+
+![Markdown image](./assets/markdown.png)
+
+<Table data='[{"name":"Table row","value":5}]' columns='["name","value"]' />
+
+<Chart config='{"type":"bar","data":{"labels":["A"],"datasets":[{"label":"Values","data":[3]}]}}' />
+
+<PromptBox title="Prompt title" text="Prompt content" />
+
+<HtmlBlock>
+
+```html
+<div class="contract-html">Raw HTML content</div>
+<script>window.contractHtmlBlock = true</script>
+```
+
+</HtmlBlock>
+
+```ts
+const highlighted = true
+```

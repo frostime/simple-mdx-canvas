@@ -1,0 +1,17 @@
+---
+title: "Frontmatter Data Fixture"
+data:
+  rows:
+    $src: rows.json
+  chart:
+    $inline:
+      type: bar
+      data:
+        labels: [Alpha, Beta]
+        datasets:
+          - { label: Score, data: [2, 4] }
+---
+
+<Table from="rows" columns='["name","status"]' />
+
+<Chart from="chart" title="Data chart" />

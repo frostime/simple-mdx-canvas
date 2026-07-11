@@ -1,0 +1,4 @@
+[
+  { "name": "Alpha", "status": "ready" },
+  { "name": "Beta", "status": "queued" }
+]

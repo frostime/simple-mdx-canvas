@@ -26,6 +26,7 @@
     "serve:example": "node dist/cli.js serve examples/report.mdx --port 4321",
     "check": "tsc -p tsconfig.json --noEmit",
     "test": "tsx --test test/*.test.ts",
+    "verify": "npm run check && npm test && npm run build && npm run validate:example && npm run render:example",
     "prepack": "npm run build",
     "clean": "node scripts/clean.mjs"
   },
