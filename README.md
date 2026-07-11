@@ -192,9 +192,10 @@ $$
 
 ## Documentation
 
-- [`SPEC.md`](./SPEC.md)
-- [`DESIGN.md`](./DESIGN.md)
-- [`docs/TECH_ROUTE.md`](./docs/TECH_ROUTE.md)
+- [`docs/README.md`](./docs/README.md) — choose the right contract, architecture, maintenance, or backlog document.
+- [`docs/SPEC.md`](./docs/SPEC.md) — supported public behavior.
+- [`docs/DESIGN.md`](./docs/DESIGN.md) — ownership boundaries and architecture constraints.
+- [`docs/DEVELOPMENT.md`](./docs/DEVELOPMENT.md) — verification and maintenance workflow.
 
 ## Agent Skill
 

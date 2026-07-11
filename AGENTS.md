@@ -4,7 +4,9 @@ Project: `simple-mdx-canvas` converts one agent-written `.mdx` file into a direc
 
 Core contract: `.mdx` content + registered components -> `smc validate` -> `smc render` -> `.html`. Do not turn this into a general app framework.
 
-Before changing behavior, read the relevant code plus `SPEC.md`/`DESIGN.md`. Keep changes surgical; do not refactor adjacent code without need.
+Before changing behavior, read the relevant code plus `docs/README.md` and the
+applicable document under `docs/`. Keep changes surgical; do not refactor
+adjacent code without need.
 
 Verification:
 
