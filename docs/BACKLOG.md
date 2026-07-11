@@ -16,7 +16,7 @@ file as end-user documentation.
   arbitrary document-module loader.
 - `render` and `serve` use the same document semantics. Rendering always
   validates before writing or serving HTML.
-- The supported Node runtime is Node 20 or newer. Every documented command,
+- The supported Node runtime is Node 22 or newer. Every documented command,
   config path, and extension path must work on that range after package
   installation, not only from this repository's source checkout.
 
@@ -69,8 +69,8 @@ be called out in release notes and migration guidance:
 - Reject document-level `import` and `export` in every command mode.
 - Remove unimplemented config and frontmatter declarations: `layout`,
   `output.selfContained`, `snippets`, `components.localDir`, and inactive named
-  theme claims. Replace the unused `renderMode` metadata with the implemented
-  interactive-component contract.
+  theme claims. Remove the unused `renderMode` metadata; the later interactive
+  component contract will define its own manifest field.
 - Replace the claim that every HTML artifact is self-contained with the asset
   rule above.
 
@@ -122,7 +122,7 @@ Acceptance:
 - Config and component manifest discovery have an explicit extension policy.
 - A packed tarball smoke test exercises `init`, `validate`, `render`, and
   `list-components` from a clean temporary project.
-- Node 20 coverage verifies the documented runtime floor.
+- Node 22 and Node 24 coverage verify the documented runtime floor.
 
 ### P0: Implement User TS/TSX Component Loading
 
@@ -133,7 +133,7 @@ Acceptance:
 
 - A documented TypeScript or TSX manifest can register a static component that
   validates and renders through the same registry as built-ins.
-- Relative imports within the trusted extension source work under Node 20.
+- Relative imports within the trusted extension source work under Node 22.
 - Invalid manifests, load failures, duplicate names, and invalid component
   metadata produce actionable errors.
 - An integration fixture proves that a user component renders after package

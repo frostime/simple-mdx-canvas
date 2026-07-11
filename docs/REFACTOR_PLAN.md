@@ -1,6 +1,6 @@
 # P0 Refactor Plan
 
-Status: planned.
+Status: Phase 3 planned.
 
 This plan implements the P0 work in [BACKLOG.md](./BACKLOG.md). It protects
 accepted behavior while replacing the validation, package-delivery, and static
@@ -119,7 +119,7 @@ as an intentional contract change.
 
 ### Phase 1: Centralize Document Semantics
 
-Status: implementation complete, acceptance pending.
+Status: accepted.
 
 Goal: make MDX structure, locations, attributes, and component children have
 one owner.
@@ -147,7 +147,7 @@ AST traversal decides component semantics.
 
 ### Phase 2: Align the Public Language and Configuration
 
-Status: implementation complete, acceptance pending.
+Status: accepted.
 
 Goal: remove stale surface area and make command behavior match the accepted
 contract.
@@ -178,8 +178,6 @@ Work:
 - Replace direct Node imports of TypeScript extension files with a trusted
   extension-loading and compilation boundary.
 - Load config, manifest, and static component source through that boundary.
-- Move implementation files from `core/` into their ownership areas only when
-  the new boundary absorbs real complexity.
 
 Acceptance:
 
