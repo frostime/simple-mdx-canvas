@@ -3,11 +3,11 @@ import assert from 'node:assert/strict'
 import { mkdtemp, writeFile, rm, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { loadConfig } from '../src/core/config.ts'
-import { loadRegistry } from '../src/core/registry.ts'
-import { validateDocument } from '../src/core/validate.ts'
-import { renderToHtml } from '../src/core/render.ts'
-import type { CanvasDocument } from '../src/core/types.ts'
+import { loadConfig } from '../src/config.ts'
+import { loadRegistry } from '../src/components/registry.ts'
+import { validateDocument } from '../src/document/validate.ts'
+import { renderToHtml } from '../src/render/render-document.ts'
+import type { CanvasDocument } from '../src/contracts.ts'
 
 /**
  * Integration tests: frontmatter data sources flow through validate and render

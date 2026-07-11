@@ -2,7 +2,7 @@ import { z } from 'zod'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
-import type { CanvasConfig, CanvasComponentManifest, CanvasRegistry } from './types.js'
+import type { CanvasConfig, CanvasComponentManifest, CanvasRegistry } from '../contracts.js'
 import {
   Chart,
   Columns,
@@ -20,7 +20,7 @@ import {
   Tag,
   Grid,
   Cell,
-} from '../runtime/components/index.js'
+} from './built-ins/index.js'
 
 const jsonArrayString = z.string().refine((value) => {
   try {

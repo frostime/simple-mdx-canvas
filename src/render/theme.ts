@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-import type { CanvasConfig } from './types.js'
+import type { CanvasConfig } from '../contracts.js'
 
 const require = createRequire(import.meta.url)
 

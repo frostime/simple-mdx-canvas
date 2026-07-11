@@ -1,4 +1,4 @@
-import type { CanvasValidationError } from './types.js'
+import type { CanvasValidationError } from '../contracts.js'
 
 export class CanvasValidationException extends Error {
   readonly errors: CanvasValidationError[]

@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import matter from 'gray-matter'
-import type { CanvasDocument, CanvasFrontmatter } from './types.js'
+import type { CanvasDocument, CanvasFrontmatter } from '../contracts.js'
 
 export async function loadDocument(filePath: string): Promise<CanvasDocument> {
   const source = await readFile(filePath, 'utf8')

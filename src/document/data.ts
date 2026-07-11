@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import vm from 'node:vm'
-import type { CanvasFrontmatter, CanvasValidationError } from './types.js'
+import type { CanvasFrontmatter, CanvasValidationError } from '../contracts.js'
 
 /**
  * Public surface: resolve frontmatter `data:` declarations, then resolve a

@@ -60,12 +60,12 @@ whether a file happens to parse, validate, or render.
 
 ```text
 src/
-  cli/           command parsing and process boundaries
-  config/        public configuration contract and config discovery
-  document/      source loading, frontmatter data, MDX analysis, validation
-  components/    built-ins, registry, extension loading
-  render/        HTML rendering, shell, theme and renderer-owned assets
-  contracts.ts   public cross-area types only when ownership is genuinely shared
+  cli.ts          command parsing and process boundaries
+  config.ts       public configuration contract and config discovery
+  document/       source loading, frontmatter data, MDX analysis, validation
+  components/     built-ins, registry, extension loading
+  render/         HTML rendering, shell, theme and renderer-owned assets
+  contracts.ts    public cross-area types only when ownership is genuinely shared
 ```
 
 The final file arrangement may keep a small entrypoint at `src/cli.ts` or
@@ -89,7 +89,7 @@ analyzed.
 
 ### Phase 0: Characterize the Public Contract
 
-Status: implementation complete, acceptance pending.
+Status: accepted.
 
 Goal: create executable behavior protection before moving code.
 
@@ -118,6 +118,8 @@ characterization tests are green or an expected failure is explicitly recorded
 as an intentional contract change.
 
 ### Phase 1: Centralize Document Semantics
+
+Status: implementation complete, acceptance pending.
 
 Goal: make MDX structure, locations, attributes, and component children have
 one owner.

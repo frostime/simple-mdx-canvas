@@ -3,8 +3,8 @@ import assert from 'node:assert/strict'
 import { mkdtemp, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { resolveDocumentData, resolveFrom } from '../src/core/document-data.ts'
-import type { CanvasFrontmatter } from '../src/core/types.ts'
+import { resolveDocumentData, resolveFrom } from '../src/document/data.ts'
+import type { CanvasFrontmatter } from '../src/contracts.ts'
 
 /**
  * Behavior tests for the frontmatter data source module. Covers the public

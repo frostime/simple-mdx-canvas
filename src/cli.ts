@@ -5,12 +5,12 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { spawn } from 'node:child_process'
-import { loadConfig } from './core/config.js'
-import { loadDocument } from './core/document.js'
-import { loadRegistry, listComponentManifests } from './core/registry.js'
-import { validateDocument } from './core/validate.js'
-import { formatValidationErrors } from './core/errors.js'
-import { renderToHtml } from './core/render.js'
+import { loadConfig } from './config.js'
+import { loadRegistry, listComponentManifests } from './components/registry.js'
+import { loadDocument } from './document/source.js'
+import { validateDocument } from './document/validate.js'
+import { formatValidationErrors } from './document/errors.js'
+import { renderToHtml } from './render/render-document.js'
 
 const cwd = process.cwd()
 

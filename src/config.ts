@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 import path from 'node:path'
-import type { CanvasConfig } from './types.js'
+import type { CanvasConfig } from './contracts.js'
 
 export const defaultConfig: CanvasConfig = {
   theme: 'default',

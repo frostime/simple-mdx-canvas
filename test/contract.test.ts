@@ -3,12 +3,12 @@ import assert from 'node:assert/strict'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { loadConfig } from '../src/core/config.ts'
-import { loadDocument } from '../src/core/document.ts'
-import { loadRegistry } from '../src/core/registry.ts'
-import { renderToHtml } from '../src/core/render.ts'
-import { validateDocument } from '../src/core/validate.ts'
-import type { CanvasValidationError } from '../src/core/types.ts'
+import { loadConfig } from '../src/config.ts'
+import { loadRegistry } from '../src/components/registry.ts'
+import { loadDocument } from '../src/document/source.ts'
+import { validateDocument } from '../src/document/validate.ts'
+import { renderToHtml } from '../src/render/render-document.ts'
+import type { CanvasValidationError } from '../src/contracts.ts'
 
 const projectRoot = process.cwd()
 const fixtureRoot = path.join(projectRoot, 'test', 'fixtures')
@@ -28,6 +28,12 @@ const invalidFixtures: InvalidFixture[] = [
   { file: 'forbidden-import.mdx', code: 'SMC_FORBIDDEN_IMPORT' },
   { file: 'unknown-data.mdx', code: 'SMC_UNKNOWN_DATA', line: 1, component: 'Table' },
   { file: 'mdx-parse.mdx', code: 'SMC_MDX_PARSE' },
+]
+
+const astRegressionFixtures = [
+  'valid/fenced-jsx.mdx',
+  'valid/object-chart-config.mdx',
+  'valid/component-closing-text.mdx',
 ]
 
 async function validateFixture(relativePath: string) {
@@ -117,6 +123,14 @@ test('local theme CSS is appended to the generated artifact', async () => {
     await rm(cwd, { recursive: true, force: true })
   }
 })
+
+for (const fixturePath of astRegressionFixtures) {
+  test(`AST validation accepts ${fixturePath}`, async () => {
+    const result = await validateFixture(fixturePath)
+    assert.equal(result.ok, true, result.errors.map((error) => error.message).join('\n'))
+    assert.deepEqual(result.errors, [])
+  })
+}
 
 for (const fixture of invalidFixtures) {
   test(`invalid fixture ${fixture.file} reports ${fixture.code}`, async () => {
