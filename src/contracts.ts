@@ -1,7 +1,7 @@
 import type { ComponentType, ReactNode } from 'react'
 import type { z } from 'zod'
 
-export type CanvasThemeName = 'default' | 'academic' | 'compact' | string
+export type CanvasThemeName = string
 
 export type DataDeclaration = {
   $src?: string
@@ -15,29 +15,18 @@ export type CanvasFrontmatter = {
   title?: string
   description?: string
   theme?: CanvasThemeName
-  layout?: 'document' | 'report'
   data?: DataDeclarations
 }
 
 export type CanvasConfig = {
   theme: CanvasThemeName
   title?: string
-  output: {
-    selfContained: boolean
-  }
   mdx: {
     gfm: boolean
     math: boolean
-    allowImports: boolean
-    allowExports: boolean
-    allowRawHtml: boolean
   }
   components: {
-    localDir?: string
     manifest?: string
-  }
-  snippets: {
-    localDir?: string
   }
   themes: {
     localDir?: string
@@ -50,7 +39,6 @@ export type CanvasComponentManifest<Props = unknown> = {
   component: ComponentType<Props & { children?: ReactNode }>
   schema?: z.ZodType<Props>
   allowMarkdownChildren?: boolean
-  renderMode?: 'static' | 'hydrated'
   examples?: string[]
   // When set, the component accepts a `from` prop resolved from frontmatter
   // data; the resolved value is injected under this prop name before schema.
@@ -92,6 +80,4 @@ export type RenderOptions = {
   output?: string
   cwd: string
   theme?: string
-  trustedMdx?: boolean
-  validate?: boolean
 }

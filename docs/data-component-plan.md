@@ -1,6 +1,7 @@
 # Frontmatter Data Source — Plan & Acceptance
 
-Status: draft, pre-implementation. Scope of `feat/data-component` branch (name retained for history).
+Status: historical implementation plan. Superseded by `docs/BACKLOG.md`,
+`docs/REFACTOR_PLAN.md`, and the current source and tests.
 
 ## 1. Goal
 

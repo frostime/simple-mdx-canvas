@@ -17,7 +17,7 @@ import type { CanvasFrontmatter } from '../src/contracts.ts'
 
 const optsBase = {
   cwd: process.cwd(),
-  trustedMdx: false,
+
   file: 'example.mdx',
 } as const
 
@@ -116,7 +116,7 @@ test('declaration value not an object → SMC_INVALID_DATA_SOURCE', async () => 
 // $derive
 // ----------------------------------------------------------------------------
 
-test('$derive under trusted joins namespaced outputs', async () => {
+test('$derive joins namespaced outputs by default', async () => {
   const out = await resolveDocumentData(
     fm({
       rows: {
@@ -124,7 +124,7 @@ test('$derive under trusted joins namespaced outputs', async () => {
         $derive: { counts: 'r => r.map(x => x.count)', names: 'r => r.map(x => x.name)' },
       },
     }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), [])
   assert.deepEqual(out.data.get('counts'), [3, 5])
@@ -132,20 +132,20 @@ test('$derive under trusted joins namespaced outputs', async () => {
   assert.deepEqual(out.data.get('rows'), [{ name: 'a', count: 3 }, { name: 'b', count: 5 }])
 })
 
-test('$derive without --trusted-mdx reports SMC_FORBIDDEN_DATA_TRANSFORM; base still resolved', async () => {
+test('$derive evaluates without a CLI mode', async () => {
   const out = await resolveDocumentData(
     fm({ rows: { $inline: [1, 2], $derive: { doubled: 'r => r.map(x => x * 2)' } } }),
     { ...optsBase, docDir: process.cwd() },
   )
-  assert.deepEqual(codes(out), ['SMC_FORBIDDEN_DATA_TRANSFORM'])
+  assert.deepEqual(codes(out), [])
   assert.deepEqual(out.data.get('rows'), [1, 2])
-  assert.equal(out.data.has('doubled'), false)
+  assert.deepEqual(out.data.get('doubled'), [2, 4])
 })
 
 test('$derive bad identifier → SMC_INVALID_DATA_NAME', async () => {
   const out = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: { 'bad name': 'r => r' } } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_INVALID_DATA_NAME'])
 })
@@ -153,7 +153,7 @@ test('$derive bad identifier → SMC_INVALID_DATA_NAME', async () => {
 test('$derive non-string lambda → SMC_INVALID_DATA_SOURCE', async () => {
   const out = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: { bad: 42 as unknown as string } } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_INVALID_DATA_SOURCE'])
 })
@@ -161,12 +161,12 @@ test('$derive non-string lambda → SMC_INVALID_DATA_SOURCE', async () => {
 test('$derive non-object shape (string/array) → SMC_INVALID_DATA_SOURCE', async () => {
   const str = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: 'nope' as unknown as never } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(str), ['SMC_INVALID_DATA_SOURCE'])
   const arr = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: [1, 2] as unknown as never } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(arr), ['SMC_INVALID_DATA_SOURCE'])
 })
@@ -174,7 +174,7 @@ test('$derive non-object shape (string/array) → SMC_INVALID_DATA_SOURCE', asyn
 test('$derive without $src/$inline → SMC_INVALID_DATA_SOURCE', async () => {
   const out = await resolveDocumentData(
     fm({ x: { $derive: { y: '() => 1' } } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_INVALID_DATA_SOURCE'])
 })
@@ -199,7 +199,7 @@ test('$src escaping project root → SMC_INVALID_DATA_SOURCE', async () => {
 test('$derive syntax error → SMC_DATA_TRANSFORM_ERROR', async () => {
   const out = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: { bad: 'r =>' } } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_DATA_TRANSFORM_ERROR'])
 })
@@ -207,7 +207,7 @@ test('$derive syntax error → SMC_DATA_TRANSFORM_ERROR', async () => {
 test('$derive reaching a sandbox-blocked global → SMC_DATA_TRANSFORM_ERROR', async () => {
   const out = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: { leaks: 'r => process' } } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_DATA_TRANSFORM_ERROR'])
 })
@@ -215,7 +215,7 @@ test('$derive reaching a sandbox-blocked global → SMC_DATA_TRANSFORM_ERROR', a
 test('$derive infinite loop → SMC_DATA_TRANSFORM_ERROR (timeout)', async () => {
   const out = await resolveDocumentData(
     fm({ rows: { $inline: [1], $derive: { loop: 'r => { while (true) {} }' } } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_DATA_TRANSFORM_ERROR'])
 })
@@ -223,7 +223,7 @@ test('$derive infinite loop → SMC_DATA_TRANSFORM_ERROR (timeout)', async () =>
 test('$derive name collides with own declaration name → SMC_DATA_REDECLARED', async () => {
   const out = await resolveDocumentData(
     fm({ x: { $inline: 1, $derive: { x: 'r => r' } } }),
-    { ...optsBase, trustedMdx: true, docDir: process.cwd() },
+    { ...optsBase, docDir: process.cwd() },
   )
   assert.deepEqual(codes(out), ['SMC_DATA_REDECLARED'])
 })

@@ -71,17 +71,23 @@ A canvas document may use:
 
 Components are optional tools. The Agent should choose the document structure from the user's task and source material.
 
+Canvas documents are trusted local authoring inputs. JSX expressions and
+`HtmlBlock` fragments may execute during rendering. Prefer literal props and
+frontmatter data when they express the document clearly.
+
 Do not write:
 
 - `import` or `export` statements;
 - inline component definitions;
-- arbitrary JavaScript expressions beyond simple literal props such as `{2}` or `{true}`;
 - raw `<script>` or `<style>` tags outside `HtmlBlock` fenced children;
 - event handlers such as `onClick` outside `HtmlBlock` fenced children;
 - `javascript:` links;
 - unregistered component names.
 
-The `from` prop on `Table` / `Chart` is a safe string literal that references a frontmatter `data:` declaration; it is allowed in safe mode. `$derive` under frontmatter `data:` evaluates JavaScript and requires `--trusted-mdx`; do not use it in default agent workflows.
+The `from` prop on `Table` / `Chart` is a string literal that references a
+frontmatter `data:` declaration. `$derive` under frontmatter `data:` evaluates
+synchronously during rendering with a 200 ms timeout; use it only in trusted
+local documents.
 
 ## Bulma JSX Rule
 

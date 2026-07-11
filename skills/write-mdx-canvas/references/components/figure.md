@@ -26,6 +26,6 @@ Children are not allowed. Use a self-closing tag.
 
 ## Rules
 
-- Prefer relative paths for local images stored near the `.mdx` file.
+- Document-authored URLs are preserved. A local relative URL resolves from the generated HTML file, so write the output where referenced assets remain available.
 - Always provide meaningful `alt` text when the image carries information.
 - If the image is decorative, use Markdown prose instead of a figure.

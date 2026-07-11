@@ -63,7 +63,7 @@ data:
 <Table from="rows" columns='[{"key":"name","label":"Name"},{"key":"value","label":"Value"}]' />
 ```
 
-Data is resolved at build time and embedded in the HTML; the page does not fetch at runtime. `$derive` requires `--trusted-mdx` and is not part of the default safe surface.
+Data is resolved at build time and embedded in the HTML; the page does not fetch at runtime. `$derive` runs synchronously during rendering with a 200 ms timeout; use it only in trusted local documents.
 
 ## HtmlBlock and Bulma JSX Scope
 

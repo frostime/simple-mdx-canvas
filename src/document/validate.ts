@@ -6,7 +6,6 @@ import { rehypePluginsFor, remarkPluginsFor } from './mdx-options.js'
 import type { CanvasComponentManifest, CanvasConfig, CanvasDocument, CanvasRegistry, CanvasValidationError, CanvasValidationResult } from '../contracts.js'
 
 export type ValidateDocumentOptions = {
-  trustedMdx?: boolean
   cwd?: string
   analysis?: DocumentAnalysis
 }
@@ -22,7 +21,6 @@ export async function validateDocument(
   options: ValidateDocumentOptions = {},
 ): Promise<DocumentValidationResult> {
   const errors: CanvasValidationError[] = []
-  const trusted = options.trustedMdx === true
   let analysis: DocumentAnalysis
 
   try {
@@ -38,12 +36,11 @@ export async function validateDocument(
     return { ok: false, errors }
   }
 
-  validateDocumentPolicy(analysis, document.path, config, trusted, errors)
+  validateDocumentPolicy(analysis, document.path, errors)
 
   const data = await resolveDocumentData(document.frontmatter, {
     cwd: options.cwd ?? '',
     docDir: path.dirname(document.path),
-    trustedMdx: trusted,
     file: document.path,
   })
   for (const dataError of data.errors) errors.push(withElementLocation(dataError, document.path))
@@ -77,21 +74,19 @@ export async function validateDocument(
 function validateDocumentPolicy(
   analysis: DocumentAnalysis,
   file: string,
-  config: CanvasConfig,
-  trusted: boolean,
   errors: CanvasValidationError[],
 ): void {
-  if (!trusted && !config.mdx.allowImports && analysis.esm.some((node) => /^\s*import\b/m.test(node.source))) {
-    errors.push(validationError(file, 'SMC_FORBIDDEN_IMPORT', 'MDX import is disabled in safe mode.', undefined, 'Move components into the registry instead of importing them in the document.'))
+  if (analysis.esm.some((node) => /^\s*import\b/m.test(node.source))) {
+    errors.push(validationError(file, 'SMC_FORBIDDEN_IMPORT', 'Document imports are not supported.', undefined, 'Register reusable components through the local component manifest.'))
   }
-  if (!trusted && !config.mdx.allowExports && analysis.esm.some((node) => /^\s*export\b/m.test(node.source))) {
-    errors.push(validationError(file, 'SMC_FORBIDDEN_EXPORT', 'MDX export is disabled in safe mode.', undefined, 'Use frontmatter for document metadata and registry components for reusable UI.'))
+  if (analysis.esm.some((node) => /^\s*export\b/m.test(node.source))) {
+    errors.push(validationError(file, 'SMC_FORBIDDEN_EXPORT', 'Document exports are not supported.', undefined, 'Use frontmatter for document data and registered components for reusable UI.'))
   }
-  if (!config.mdx.allowRawHtml && analysis.elements.some((element) => element.name === 'script' || element.name === 'style')) {
-    errors.push(validationError(file, 'SMC_FORBIDDEN_RAW_HTML', 'Raw <script> or <style> tags are disabled.', undefined, 'Use registered components and themes instead.'))
+  if (analysis.elements.some((element) => element.name === 'script' || element.name === 'style')) {
+    errors.push(validationError(file, 'SMC_FORBIDDEN_RAW_HTML', 'Raw <script> or <style> tags are not supported in document content.', undefined, 'Use HtmlBlock for trusted HTML fragments and scripts.'))
   }
-  if (!trusted && hasInlineJavaScript(analysis)) {
-    errors.push(validationError(file, 'SMC_FORBIDDEN_INLINE_JS', 'Inline event handlers or javascript: links are disabled.', undefined, 'Move behavior into a registered component.'))
+  if (hasInlineJavaScript(analysis)) {
+    errors.push(validationError(file, 'SMC_FORBIDDEN_INLINE_JS', 'Inline event handlers and javascript: links are not supported in document content.', undefined, 'Put trusted browser behavior in HtmlBlock or a registered component.'))
   }
 }
 

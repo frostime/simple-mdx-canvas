@@ -54,7 +54,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
       path: ['config'],
     }),
     allowMarkdownChildren: false,
-    renderMode: 'hydrated',
     dataProp: 'config',
     examples: [
       `<Chart config='{ "type": "bar", "data": { "labels": ["A"], "datasets": [{ "label": "Value", "data": [3] }] } }' />`,
@@ -67,7 +66,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Columns,
     schema: z.object({}),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Column',
@@ -75,7 +73,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Column,
     schema: z.object({ title: z.string().optional() }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Callout',
@@ -86,7 +83,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
       title: z.string().optional(),
     }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Cards',
@@ -94,7 +90,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Cards,
     schema: z.object({}),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Card',
@@ -102,7 +97,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Card,
     schema: z.object({ title: z.string().optional() }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Tabs',
@@ -110,7 +104,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Tabs,
     schema: z.object({}),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Tab',
@@ -118,7 +111,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Tab,
     schema: z.object({ title: z.string() }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Figure',
@@ -131,7 +123,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
       source: z.string().optional(),
     }),
     allowMarkdownChildren: false,
-    renderMode: 'static',
   },
 
   {
@@ -162,7 +153,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
       path: ['data'],
     }),
     allowMarkdownChildren: false,
-    renderMode: 'static',
     dataProp: 'data',
     examples: [
       `<Table columns='["name","status"]' data='[{"name":"Build","status":"pass"}]' />`,
@@ -175,7 +165,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Tags,
     schema: z.object({}),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Tag',
@@ -188,7 +177,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
       light: z.boolean().optional(),
     }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
     examples: [`<Tag color="success" light>Ready</Tag>`],
   },
   {
@@ -197,7 +185,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Grid,
     schema: z.object({ columns: z.coerce.number().int().min(1).max(12).optional() }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'Cell',
@@ -205,7 +192,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: Cell,
     schema: z.object({ span: z.coerce.number().int().min(1).max(12).optional() }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'PromptBox',
@@ -213,7 +199,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: PromptBox,
     schema: z.object({ title: z.string().optional(), text: z.string().optional() }),
     allowMarkdownChildren: true,
-    renderMode: 'static',
   },
   {
     name: 'HtmlBlock',
@@ -221,7 +206,6 @@ export const builtInManifests: CanvasComponentManifest<any>[] = [
     component: HtmlBlock,
     schema: z.object({}),
     allowMarkdownChildren: true,
-    renderMode: 'static',
     examples: [
       `<HtmlBlock>\n\n\`\`\`html\n<div class="notification is-info is-light">Bulma HTML</div>\n\`\`\`\n\n</HtmlBlock>`,
     ],

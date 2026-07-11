@@ -62,7 +62,7 @@ test('validate accepts <Table from="rows"> with matching frontmatter data', asyn
   }) as never
   document.source = `---\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n      - { a: 2 }\n---\n<Table from="rows" columns='["a"]' />\n`
   document.content = `<Table from="rows" columns='["a"]' />\n`
-  const result = await validateDocument(document, registry, config, { trustedMdx: false, cwd: dir })
+  const result = await validateDocument(document, registry, config, { cwd: dir })
   assert.deepEqual(codes(result), [])
   await rm(dir, { recursive: true, force: true })
 })
@@ -75,7 +75,7 @@ test('validate rejects from pointing at undeclared data → SMC_UNKNOWN_DATA', a
     content: `<Table from="missing" columns='["a"]' />\n`,
     frontmatter: { title: 't' },
   }
-  const result = await validateDocument(document, registry, config, { trustedMdx: false, cwd: dir })
+  const result = await validateDocument(document, registry, config, { cwd: dir })
   assert.ok(codes(result).includes('SMC_UNKNOWN_DATA'))
   await rm(dir, { recursive: true, force: true })
 })
@@ -88,25 +88,12 @@ test('validate rejects from + native dataProp both present → SMC_DATA_SOURCE_C
     content: `<Table from="rows" data='[{"a":1}]' columns='["a"]' />\n`,
     frontmatter: { title: 't', data: { rows: { $inline: [{ a: 1 }] } } } as never,
   }
-  const result = await validateDocument(document, registry, config, { trustedMdx: false, cwd: dir })
+  const result = await validateDocument(document, registry, config, { cwd: dir })
   assert.ok(codes(result).includes('SMC_DATA_SOURCE_CONFLICT'))
   await rm(dir, { recursive: true, force: true })
 })
 
-test('validate rejects $derive in safe mode → SMC_FORBIDDEN_DATA_TRANSFORM', async () => {
-  const { dir, config, registry } = await setup()
-  const document: CanvasDocument = {
-    path: path.join(dir, 't.mdx'),
-    source: `---\ntitle: t\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n    $derive:\n      ds: "r => r"\n---\n<Table from="ds" columns='["a"]' />\n`,
-    content: `<Table from="ds" columns='["a"]' />\n`,
-    frontmatter: { title: 't', data: { rows: { $inline: [{ a: 1 }], $derive: { ds: 'r => r' } } } } as never,
-  }
-  const result = await validateDocument(document, registry, config, { trustedMdx: false, cwd: dir })
-  assert.ok(codes(result).includes('SMC_FORBIDDEN_DATA_TRANSFORM'))
-  await rm(dir, { recursive: true, force: true })
-})
-
-test('validate accepts $derive under --trusted-mdx', async () => {
+test('validate accepts $derive by default', async () => {
   const { dir, config, registry } = await setup()
   const document: CanvasDocument = {
     path: path.join(dir, 't.mdx'),
@@ -114,7 +101,7 @@ test('validate accepts $derive under --trusted-mdx', async () => {
     content: `<Table from="ds" columns='["a"]' />\n`,
     frontmatter: { title: 't', data: { rows: { $inline: [{ a: 1 }, { a: 2 }], $derive: { ds: 'r => r' } } } } as never,
   }
-  const result = await validateDocument(document, registry, config, { trustedMdx: true, cwd: dir })
+  const result = await validateDocument(document, registry, config, { cwd: dir })
   assert.deepEqual(codes(result), [])
   await rm(dir, { recursive: true, force: true })
 })
@@ -127,7 +114,7 @@ test('validate rejects from on a component without dataProp → SMC_INVALID_PROJ
     content: `<Callout from="x">body</Callout>\n`,
     frontmatter: { title: 't', data: { x: { $inline: 1 } } } as never,
   }
-  const result = await validateDocument(document, registry, config, { trustedMdx: false, cwd: dir })
+  const result = await validateDocument(document, registry, config, { cwd: dir })
   assert.ok(codes(result).includes('SMC_INVALID_PROJECTION'))
   await rm(dir, { recursive: true, force: true })
 })
@@ -142,7 +129,7 @@ test('render embeds $src data into HTML; no fetch, no external json src', async 
   const mdxPath = path.join(dir, 'doc.mdx')
   const outPath = path.join(dir, 'out.html')
   await writeFile(mdxPath, `---\ntitle: t\ndata:\n  rows:\n    $src: rows.json\n---\n# H\n<Table from="rows" columns='[{"key":"name","label":"Name"},{"key":"status","label":"Status"}]' />\n`)
-  const result = await renderToHtml({ input: mdxPath, output: outPath, cwd: dir, validate: true })
+  const result = await renderToHtml({ input: mdxPath, output: outPath, cwd: dir })
   const html = await readFile(outPath, 'utf8')
   assert.ok(html.includes('alpha'), 'rendered HTML must contain the row data')
   assert.ok(!html.includes('fetch('), 'rendered HTML must not fetch data at runtime')
@@ -156,54 +143,33 @@ test('render embeds Chart config resolved from frontmatter data', async () => {
   const mdxPath = path.join(dir, 'doc.mdx')
   const outPath = path.join(dir, 'out.html')
   await writeFile(mdxPath, `---\ntitle: t\ndata:\n  cfg:\n    $inline:\n      type: bar\n      data:\n        labels: [A, B]\n        datasets:\n          - { label: x, data: [4, 9] }\n---\n<Chart from="cfg" title="c" />\n`)
-  await renderToHtml({ input: mdxPath, output: outPath, cwd: dir, validate: true })
+  await renderToHtml({ input: mdxPath, output: outPath, cwd: dir })
   const html = await readFile(outPath, 'utf8')
   assert.ok(html.includes('data-canvas-chart'), 'chart canvas must carry the resolved config')
   assert.ok(html.includes('"datasets"'), 'resolved chart config must be embedded')
   await rm(dir, { recursive: true, force: true })
 })
 
-test('render rejects derive without --trusted-mdx (validate blocks render)', async () => {
+test('render embeds $derive output by default', async () => {
   const dir = await mkdtemp(path.join(tmpdir(), 'smc-it-'))
   const mdxPath = path.join(dir, 'doc.mdx')
   const outPath = path.join(dir, 'out.html')
-  await writeFile(mdxPath, `---\ntitle: t\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n    $derive:\n      ds: "r => r"\n---\n<Table from="ds" columns='["a"]' />\n`)
-  await assert.rejects(
-    () => renderToHtml({ input: mdxPath, output: outPath, cwd: dir, validate: true }),
-    (err: unknown) => {
-      const msg = err instanceof Error ? err.message : String(err)
-      return msg.includes('SMC_FORBIDDEN_DATA_TRANSFORM') || msg.includes('trusted-mdx')
-    },
-  )
+  await writeFile(mdxPath, `---\ntitle: t\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n    $derive:\n      doubled: "r => r.map(x => ({ value: x.a * 2 }))"\n---\n<Table from="doubled" columns='["value"]' />\n`)
+  await renderToHtml({ input: mdxPath, output: outPath, cwd: dir })
+  const html = await readFile(outPath, 'utf8')
+  assert.match(html, /<td>2<\/td>/)
   await rm(dir, { recursive: true, force: true })
 })
 
-test('render with --no-validate still fail-closes on $derive without --trusted-mdx', async () => {
-  const dir = await mkdtemp(path.join(tmpdir(), 'smc-it-'))
-  const mdxPath = path.join(dir, 'doc.mdx')
-  const outPath = path.join(dir, 'out.html')
-  await writeFile(mdxPath, `---\ntitle: t\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n    $derive:\n      ds: "r => r"\n---\n<Table from="ds" columns='["a"]' />\n`)
-  await assert.rejects(
-    () => renderToHtml({ input: mdxPath, output: outPath, cwd: dir, validate: false, trustedMdx: false }),
-    (err: unknown) => {
-      const msg = err instanceof Error ? err.message : String(err)
-      return msg.includes('SMC_FORBIDDEN_DATA_TRANSFORM')
-    },
-  )
-  await rm(dir, { recursive: true, force: true })
-})
-
-test('render with --no-validate fail-closes on unknown from target', async () => {
+test('render rejects an unknown from target before writing output', async () => {
   const dir = await mkdtemp(path.join(tmpdir(), 'smc-it-'))
   const mdxPath = path.join(dir, 'doc.mdx')
   const outPath = path.join(dir, 'out.html')
   await writeFile(mdxPath, `---\ntitle: t\ndata:\n  rows:\n    $inline:\n      - { a: 1 }\n---\n<Table from="missing" columns='["a"]' />\n`)
   await assert.rejects(
-    () => renderToHtml({ input: mdxPath, output: outPath, cwd: dir, validate: false }),
-    (err: unknown) => {
-      const msg = err instanceof Error ? err.message : String(err)
-      return msg.includes('SMC_UNKNOWN_DATA')
-    },
+    () => renderToHtml({ input: mdxPath, output: outPath, cwd: dir }),
+    (err: unknown) => String(err).includes('SMC_UNKNOWN_DATA'),
   )
+  await assert.rejects(() => readFile(outPath, 'utf8'))
   await rm(dir, { recursive: true, force: true })
 })

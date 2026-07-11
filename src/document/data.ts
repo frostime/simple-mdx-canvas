@@ -15,7 +15,6 @@ export type DocumentDataMap = Map<string, unknown>
 export type ResolveDataOptions = {
   cwd: string
   docDir: string
-  trustedMdx: boolean
   file: string
 }
 
@@ -41,9 +40,9 @@ const DERIVE_TIMEOUT_MS = 200
 
 // vm sandbox intrinsics: enough for ordinary data transforms (Object/Array,
 // maps, dates, math) and nothing that reaches the Node host. This is a
-// "prevent accidental misuse + limit time" layer, NOT an adversarial sandbox;
-// Function is still reachable through constructor chains, which is why derive
-// stays gated behind --trusted-mdx.
+// "prevent accidental misuse + limit time" layer, NOT an adversarial sandbox.
+// Function remains reachable through constructor chains, so canvas documents
+// and their data transforms are trusted local authoring inputs.
 const SANDBOX_CONTEXT: Record<string, unknown> = Object.freeze({
   Math,
   JSON,
@@ -92,10 +91,6 @@ export async function resolveDocumentData(
     if (hasDerive) {
       if (typeof deriveRaw !== 'object' || Array.isArray(deriveRaw)) {
         errors.push(dataError('SMC_INVALID_DATA_SOURCE', options.file, `"$derive" on "${declName}" must be a map of { name: lambda } objects.`, 'Use $derive: { name: "r => ..." }.'))
-        continue
-      }
-      if (!options.trustedMdx) {
-        errors.push(dataError('SMC_FORBIDDEN_DATA_TRANSFORM', options.file, `"$derive" on "${declName}" requires --trusted-mdx.`, 'Remove $derive or run with --trusted-mdx.'))
         continue
       }
       for (const [derivedName, lambda] of Object.entries(deriveRaw as Record<string, unknown>)) {

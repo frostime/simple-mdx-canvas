@@ -5,6 +5,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { spawn } from 'node:child_process'
+import { createRequire } from 'node:module'
 import { loadConfig } from './config.js'
 import { loadRegistry, listComponentManifests } from './components/registry.js'
 import { loadDocument } from './document/source.js'
@@ -13,12 +14,13 @@ import { formatValidationErrors } from './document/errors.js'
 import { renderToHtml } from './render/render-document.js'
 
 const cwd = process.cwd()
+const packageVersion = (createRequire(import.meta.url)('../package.json') as { version: string }).version
 
 const program = new Command()
   .name('simple-mdx-canvas')
   .alias('smc')
   .description('Render one controlled MDX document into a visual HTML canvas.')
-  .version('0.1.0')
+  .version(packageVersion)
 
 program
   .command('render')
@@ -26,16 +28,12 @@ program
   .argument('<input>', 'input .mdx file')
   .requiredOption('-o, --output <file>', 'output .html file')
   .option('--theme <name>', 'override the document theme')
-  .option('--trusted-mdx', 'allow full MDX syntax; not recommended for agent-generated documents', false)
-  .option('--no-validate', 'skip validation before rendering')
   .action(async (input: string, options: RenderCommandOptions) => {
     const result = await renderToHtml({
       input,
       output: options.output,
       cwd,
       theme: options.theme,
-      trustedMdx: options.trustedMdx,
-      validate: options.validate,
     })
     console.log(`Rendered: ${result.output}`)
   })
@@ -44,12 +42,11 @@ program
   .command('validate')
   .description('Validate one .mdx document without rendering it.')
   .argument('<input>', 'input .mdx file')
-  .option('--trusted-mdx', 'allow full MDX syntax during validation', false)
-  .action(async (input: string, options: ValidateCommandOptions) => {
+  .action(async (input: string) => {
     const config = await loadConfig(cwd)
     const registry = await loadRegistry(config, cwd)
     const document = await loadDocument(path.resolve(cwd, input))
-    const result = await validateDocument(document, registry, config, { trustedMdx: options.trustedMdx })
+    const result = await validateDocument(document, registry, config)
 
     if (!result.ok) {
       console.error(formatValidationErrors(result.errors))
@@ -74,7 +71,7 @@ program
 
     const server = createServer(async (_req, res) => {
       try {
-        const result = await renderToHtml({ input, cwd, validate: true })
+        const result = await renderToHtml({ input, cwd })
         res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' })
         res.end(result.html)
       } catch (err) {
@@ -96,7 +93,6 @@ program
   .action(async () => {
     const root = path.resolve(cwd, '.simple-mdx-canvas')
     await mkdir(path.join(root, 'components'), { recursive: true })
-    await mkdir(path.join(root, 'snippets'), { recursive: true })
     await mkdir(path.join(root, 'themes'), { recursive: true })
 
     const configPath = path.resolve(cwd, 'simple-mdx-canvas.config.ts')
@@ -133,12 +129,6 @@ program.parseAsync(process.argv).catch((err: unknown) => {
 type RenderCommandOptions = {
   output: string
   theme?: string
-  trustedMdx: boolean
-  validate: boolean
-}
-
-type ValidateCommandOptions = {
-  trustedMdx: boolean
 }
 
 type ServeCommandOptions = {
@@ -154,5 +144,5 @@ function openUrl(url: string) {
 }
 
 function defaultConfigTemplate(): string {
-  return `import { defineConfig } from 'simple-mdx-canvas'\n\nexport default defineConfig({\n  theme: 'default',\n  components: {\n    manifest: '.simple-mdx-canvas/components.manifest.ts'\n  },\n  snippets: {\n    localDir: '.simple-mdx-canvas/snippets'\n  },\n  themes: {\n    localDir: '.simple-mdx-canvas/themes'\n  }\n})\n`
+  return `import { defineConfig } from 'simple-mdx-canvas'\n\nexport default defineConfig({\n  theme: 'default',\n  components: {\n    manifest: '.simple-mdx-canvas/components.manifest.ts'\n  },\n  themes: {\n    localDir: '.simple-mdx-canvas/themes'\n  }\n})\n`
 }

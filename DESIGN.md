@@ -35,7 +35,9 @@ Represents one `.mdx` input file and its frontmatter, including optional `data:`
 
 Maps component names to React components and schemas.
 
-The registry includes built-ins and optional user components. Documents may use registered components but may not import arbitrary components in safe mode.
+The registry includes built-ins and optional user components. Documents may use
+registered components; document-level ESM imports are not part of the document
+language.
 
 ### Theme
 
@@ -92,7 +94,8 @@ smc init
 smc list-components
 ```
 
-The CLI owns command parsing only. It delegates rendering, validation, config loading, and registry loading to `core/` modules.
+The CLI owns command parsing only. It delegates configuration, component
+registry, document semantics, and rendering to their ownership modules.
 
 ## 5. Why Not a Documentation Framework
 
@@ -102,20 +105,22 @@ Documentation frameworks such as Docusaurus, Nextra, and Rspress solve multi-pag
 
 Therefore, the project avoids site concepts such as routes, sidebars, collections, and static site deployment.
 
-## 6. MDX Safety Boundary
+## 6. Document Trust Boundary
 
-MDX is powerful because it compiles to JavaScript. That is also the risk.
+Canvas documents are trusted local authoring inputs. JSX expressions,
+`HtmlBlock`, and `$derive` may execute during rendering; this project does not
+provide an adversarial MDX or JavaScript sandbox.
 
-The default safe mode blocks import/export, raw scripts/styles, inline event handlers, and unknown components. This is not a complete security sandbox, but it prevents the most common accidental escapes in agent-generated documents.
-
-User component code is treated as trusted local code.
+The document language excludes ESM import/export, direct scripts/styles, direct
+inline event handlers, and `javascript:` links. Reusable code belongs in local
+registered components; trusted HTML fragments and scripts belong in `HtmlBlock`.
 
 ## 7. Component Design
 
-Built-ins are intentionally small and report-oriented. Their source files are split by component family under `src/runtime/components/` so visual behavior does not accumulate in one monolithic runtime file:
+Built-ins are intentionally small and report-oriented. Their source files are split by component family under `src/components/built-ins/` so visual behavior does not accumulate in one monolithic runtime file:
 
 ```text
-src/runtime/components/
+src/components/built-ins/
   chart.tsx
   columns.tsx
   grid.tsx
@@ -146,22 +151,29 @@ Built-in purposes:
 
 `Chart` accepts a Chart.js configuration object. The component stays deep by delegating chart semantics to Chart.js instead of inventing a smaller parallel chart API. Both `Chart` and `Table` accept a `from` prop resolved from frontmatter `data:` declarations; `manifest.dataProp` declares which native prop the resolved value is injected into, so the data-source mechanism is general without each component implementing it.
 
-Frontmatter data sources live in `src/core/document-data.ts`, a deep module exposing only `resolveDocumentData` and `resolveFrom`. Source resolution (`$src` file load, `$inline` literal), identifier and namespace checks, the `$derive` sandbox, and the projection DSL parser are private to it. Both validate and render call the same two functions, so data semantics are defined once.
+Frontmatter data sources live in `src/document/data.ts`, a deep module exposing
+only `resolveDocumentData` and `resolveFrom`. Source resolution (`$src` file
+load, `$inline` literal), identifier and namespace checks, the `$derive`
+sandbox, and the projection DSL parser are private to it. Both validation and
+render preparation use the same `DocumentAnalysis`, so MDX structure and data
+semantics are defined once.
 
 `Columns` is deliberately shallow visually: it arranges children but does not add borders, backgrounds, or padding. Visual emphasis belongs in child components such as `Card`, `Callout`, or `Figure`.
 
 ## 8. Validation Design
 
-Validation precedes evaluation. It performs:
+Validation precedes evaluation. `src/document/analysis.ts` parses MDX once and
+supplies component nodes, attributes, positions, and document ESM nodes to both
+validation and render preparation. Validation performs:
 
-- policy checks with source scanning;
+- document-language policy checks;
 - component existence checks;
 - prop schema checks;
 - MDX compile checks.
 
-The validator emits stable error codes for agent repair loops.
-
-Known MVP limitation: prop extraction for the existing component schemas uses a conservative regex attribute scan. The `from` data-source path resolves through the mdast AST (via `@mdx-js/mdx`'s processor) for byte-exact source spans, so render-time `from` splicing is precise. Migrating the remaining regex prop extraction onto mdast is future work.
+The validator emits stable error codes for agent repair loops. Rendering uses
+the same analysis for byte-exact `from` replacement, so validation and rendering
+cannot interpret component syntax through different parsers.
 
 ## 9. Theme Design
 
@@ -170,7 +182,7 @@ Bulma is the default design substrate. `simple-mdx-canvas` adds a small CSS laye
 Theme state has two axes:
 
 ```text
-design theme: default | academic | compact | user theme
+design theme: default | local theme name
 color mode: light | dark
 ```
 
@@ -185,7 +197,6 @@ The planned extension contract is:
 ```text
 .simple-mdx-canvas/
   components/
-  snippets/
   themes/
   components.manifest.ts
 ```
@@ -202,18 +213,6 @@ The product contract is a standalone Node-compatible CLI package, not a Bun-only
 - Bun may be used as an optional developer runtime, but users and agents should not be required to install Bun.
 
 The implementation follows the code-quality rule used by the bundled engineering skills: public entry first, main flow before details, and comments only for contracts or non-obvious rationale.
-
-## 12. Future Work
-
-High-value next steps:
-
-1. Migrate the remaining regex-based JSX prop extraction (used by validate for non-`from` props) onto mdast; render already uses mdast for `from` splicing.
-2. Add asset existence validation for `Figure`.
-3. Add real local user component example.
-4. Add optional self-contained asset bundling.
-5. Add `Snippet` support for reusable MDX fragments.
-6. Add tests for validation error codes.
-
 
 ## Math Pipeline
 

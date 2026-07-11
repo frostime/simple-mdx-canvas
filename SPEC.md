@@ -89,7 +89,6 @@ Frontmatter fields:
 title: string
 description?: string
 theme?: string
-layout?: document | report
 data?: DataDeclarations
 ```
 
@@ -111,28 +110,30 @@ data:
   counts:
     $inline:
       - { name: a, count: 3 }
-    $derive:                      # gated by --trusted-mdx
+    $derive:
       onlyCounts: "r => r.map(x => x.count)"
 ```
 
-`$derive` is a map of `{ name: "<lambda string>" }` where each lambda is `(input) => <plain value>`, evaluated synchronously in a constrained vm sandbox with a 200ms timeout. It is **not** an adversarial sandbox; derive stays gated behind `--trusted-mdx` and is not enabled in default agent workflows. Without `--trusted-mdx`, any `$derive` produces `SMC_FORBIDDEN_DATA_TRANSFORM`.
+`$derive` is a map of `{ name: "<lambda string>" }` where each lambda is `(input) => <plain value>`, evaluated synchronously in a constrained vm sandbox with a 200ms timeout. Canvas documents are trusted local inputs; the timeout limits accidental non-termination, but the sandbox is **not** an adversarial security boundary.
 
 Consuming components accept a `from` string prop instead of their native data prop. A component declares which prop `from` resolves into (`Table` → `data`, `Chart` → `config`). `from` supports a small projection DSL: `X` (whole value), `X.f.g` (object path), `X[i]` (array index), `X[].f.g` (array extraction with null padding so output length equals source length). `from` and the native data prop are mutually exclusive.
 
 The Markdown baseline is GFM-compatible Markdown. Fenced code blocks are syntax-highlighted when a language is provided. Plain text and Markdown-like code fences wrap by default. Math notation is enabled by default with `$...$` inline math and `$$...$$` display math. Components are written as JSX-like MDX tags but are restricted by the component registry.
 
-## 6. Component Policy
+## 6. Document Policy
 
-Default policy:
+Canvas documents are trusted local authoring inputs. JSX expressions and
+`HtmlBlock` fragments may execute during rendering.
 
-- Use registered components only.
+- Use registered components for capitalized component tags.
 - Do not import components inside the document.
 - Do not export variables or functions inside the document.
 - Do not define inline components.
-- Do not use raw `<script>` or `<style>` tags.
-- Do not use inline event handlers or `javascript:` links.
+- Do not use direct raw `<script>` or `<style>` tags; use `HtmlBlock` for
+  trusted HTML fragments or scripts.
+- Do not use direct inline event handlers or `javascript:` links.
 
-Allowed in safe mode:
+Registered component use:
 
 ```mdx
 <Callout type="warning" title="Limit">
@@ -195,7 +196,6 @@ Default extension location:
 ```text
 .simple-mdx-canvas/
   components/
-  snippets/
   themes/
   components.manifest.ts
 ```
@@ -209,7 +209,7 @@ Bulma CSS is the default visual substrate. The project-specific stylesheet must 
 Theme state has two axes:
 
 ```text
-design theme: default | academic | compact | user theme
+design theme: default or a local theme name
 color mode: light | dark
 ```
 
@@ -230,7 +230,9 @@ The MVP theme system exposes page width, chart accent, shell behavior, and local
 
 ### HTML file
 
-The default target is a self-contained HTML file.
+The default target is a directly openable HTML file. Renderer-owned CSS and
+scripts are embedded; document-authored URLs remain unchanged and resolve
+relative to the generated HTML file.
 
 ### Serve
 
@@ -250,27 +252,30 @@ Required error categories:
 - `SMC_UNKNOWN_COMPONENT`
 - `SMC_COMPONENT_SCHEMA`
 - `SMC_FORBIDDEN_CHILDREN`
-- `SMC_MISSING_ASSET` (planned)
-- `SMC_UNKNOWN_THEME` (planned)
+- `SMC_MISSING_ASSET`
 - `SMC_UNKNOWN_DATA`
 - `SMC_DATA_REDECLARED`
 - `SMC_INVALID_DATA_NAME`
 - `SMC_INVALID_PROJECTION`
-- `SMC_FORBIDDEN_DATA_TRANSFORM`
 - `SMC_DATA_TRANSFORM_ERROR`
 - `SMC_DATA_SOURCE_CONFLICT`
 - `SMC_INVALID_DATA_SOURCE`
 
 Error output should include file, line, component, prop, message, and fix guidance when possible.
 
-## 12. Security Model
+## 12. Trust Model
 
-Default mode treats MDX as content, not code.
+Canvas documents, local component code, and `$derive` lambdas are trusted local
+inputs. The renderer does not provide an adversarial MDX or JavaScript sandbox.
 
-- MDX documents are restricted.
-- Component implementations are trusted local code.
-- Frontmatter `data:` declarations are resolved at build time; `$inline` and `$src` are plain data. `$derive` evaluates a string lambda and is gated by `--trusted-mdx`; its sandbox prevents accidental host access and limits execution time but is not an adversarial sandbox.
-- Full MDX power can be enabled with `--trusted-mdx`, but agent workflows should not use it by default.
+- Document-level ESM is excluded from the language; reusable code belongs in
+  registered local components.
+- Frontmatter `$inline` and `$src` resolve at build time. `$derive` runs in a
+  constrained vm with a 200 ms timeout to limit accidental host access and
+  non-termination, not to isolate an adversary.
+- Direct document scripts, styles, event handlers, and `javascript:` links are
+  excluded from the language. `HtmlBlock` is the explicit trusted HTML/script
+  escape hatch.
 
 ## 13. MVP Scope
 

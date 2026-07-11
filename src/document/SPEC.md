@@ -71,10 +71,10 @@ Component meaning comes from the registry supplied by `src/components/`.
   project root.
 - Declaration and derived names share one flat identifier namespace. Collisions
   are errors.
-- `$derive` transforms its declaration's resolved base value synchronously. It
-  is controlled by the caller's trusted-MDX mode and runs with a 200 ms timeout.
-  This is protection against accidental host access or non-termination, not an
-  adversarial sandbox.
+- `$derive` transforms its declaration's resolved base value synchronously with
+  a 200 ms timeout. It is available to trusted local documents by default. The
+  timeout protects against accidental host access or non-termination; it is not
+  an adversarial sandbox.
 - `from` accepts only `X`, `X.f.g`, `X[i]`, and `X[].f.g`. Array extraction
   preserves input length, padding missing values with `null`; a wrong type
   outside extraction is an error.

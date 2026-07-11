@@ -147,6 +147,8 @@ AST traversal decides component semantics.
 
 ### Phase 2: Align the Public Language and Configuration
 
+Status: implementation complete, acceptance pending.
+
 Goal: remove stale surface area and make command behavior match the accepted
 contract.
 

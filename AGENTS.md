@@ -9,11 +9,10 @@ Before changing behavior, read the relevant code plus `SPEC.md`/`DESIGN.md`. Kee
 Verification:
 
 ```bash
-npm run check --silent
-npm run build --silent
-npm run validate:example
-npm run render:example
+npm run verify --silent
 ```
+
+`verify` runs type checking, tests, build, and the example validate/render flow.
 
 When changing MDX syntax, built-in components, validation rules, rendering behavior, or visual output, update all affected docs/examples/skills in the same change.
 

@@ -48,6 +48,7 @@ Markdown children are allowed here.
 </Callout>
 ```
 
-### Do not repair by weakening validation
+### Do not bypass validation
 
-Do not add `--trusted-mdx`, `--no-validate`, or renderer changes to bypass document errors unless the user explicitly requests unsafe/trusted behavior.
+`render` always validates. Repair the document instead of changing renderer
+policy or bypassing a validation error.

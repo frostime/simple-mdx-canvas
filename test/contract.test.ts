@@ -26,6 +26,9 @@ const invalidFixtures: InvalidFixture[] = [
   { file: 'component-schema.mdx', code: 'SMC_COMPONENT_SCHEMA', line: 1, component: 'Grid', prop: 'columns' },
   { file: 'forbidden-children.mdx', code: 'SMC_FORBIDDEN_CHILDREN', line: 1, component: 'Chart' },
   { file: 'forbidden-import.mdx', code: 'SMC_FORBIDDEN_IMPORT' },
+  { file: 'forbidden-export.mdx', code: 'SMC_FORBIDDEN_EXPORT' },
+  { file: 'raw-script.mdx', code: 'SMC_FORBIDDEN_RAW_HTML' },
+  { file: 'inline-javascript.mdx', code: 'SMC_FORBIDDEN_INLINE_JS' },
   { file: 'unknown-data.mdx', code: 'SMC_UNKNOWN_DATA', line: 1, component: 'Table' },
   { file: 'mdx-parse.mdx', code: 'SMC_MDX_PARSE' },
 ]

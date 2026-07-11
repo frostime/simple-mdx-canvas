@@ -62,21 +62,21 @@ Design rules:
 - `Columns` and `Grid` are layout components. They do not add card backgrounds, borders, or padding to each child.
 - Every generated page includes a top toolbar with a light/dark toggle. The toggle updates Bulma-compatible `data-theme` and stores the choice in `localStorage`.
 
-## Safe MDX Policy
+## Document Policy
 
-Default agent mode is restricted:
+Canvas documents are trusted local authoring inputs. JSX expressions and
+`HtmlBlock` fragments may execute during rendering.
 
-- no MDX imports;
-- no MDX exports;
-- no inline component definitions;
-- no raw `<script>` or `<style>` tags;
-- only registered components may be used.
-
-Use `--trusted-mdx` only for local trusted documents.
+- document-level MDX `import` and `export` are not supported;
+- inline component definitions are not supported;
+- direct `<script>` and `<style>` tags are not supported; use `HtmlBlock` for
+  trusted HTML fragments or scripts;
+- direct event handlers and `javascript:` links are not supported;
+- capitalized component tags must be registered.
 
 ## Built-in Components
 
-Math support is enabled by default through `remark-math`, `rehype-katex`, and embedded KaTeX CSS. Built-in component implementations are split under `src/runtime/components/`, one component family per file. The registry imports them from `src/runtime/components/index.ts`.
+Math support is enabled by default through `remark-math`, `rehype-katex`, and embedded KaTeX CSS. Built-in component implementations are split under `src/components/built-ins/`, one component family per file. The registry imports them from `src/components/built-ins/index.ts`.
 
 - Math notation — `$inline$` and `$$block$$`, rendered with KaTeX
 - `Chart` — rendered from a Chart.js configuration object
@@ -97,7 +97,7 @@ Math support is enabled by default through `remark-math`, `rehype-katex`, and em
 ```mdx
 ---
 title: "Project Report"
-theme: "academic"
+theme: "default"
 ---
 
 # Project Report

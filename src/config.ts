@@ -5,18 +5,11 @@ import type { CanvasConfig } from './contracts.js'
 
 export const defaultConfig: CanvasConfig = {
   theme: 'default',
-  output: {
-    selfContained: true,
-  },
   mdx: {
     gfm: true,
     math: true,
-    allowImports: false,
-    allowExports: false,
-    allowRawHtml: false,
   },
   components: {},
-  snippets: {},
   themes: {},
 }
 
@@ -46,10 +39,8 @@ export function mergeConfig(base: CanvasConfig, override: Partial<CanvasConfig>)
   return {
     ...base,
     ...override,
-    output: { ...base.output, ...override.output },
     mdx: { ...base.mdx, ...override.mdx },
     components: { ...base.components, ...override.components },
-    snippets: { ...base.snippets, ...override.snippets },
     themes: { ...base.themes, ...override.themes },
   }
 }

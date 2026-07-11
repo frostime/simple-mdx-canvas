@@ -24,7 +24,7 @@ data:
     $inline:
       - { name: a, count: 3 }
       - { name: b, count: 5 }
-    $derive:                        # requires --trusted-mdx
+    $derive:
       onlyCounts: "r => r.map(x => x.count)"
       names: "r => r.map(x => x.name)"
 ---
@@ -40,7 +40,7 @@ Rules:
 
 - `$src` and `$inline` are mutually exclusive.
 - Declaration names and derived names share one flat namespace and must be identifiers (`[A-Za-z_][A-Za-z0-9_]*`).
-- `$derive` is gated by `--trusted-mdx`. Without it, any `$derive` fails validation with `SMC_FORBIDDEN_DATA_TRANSFORM`. Default agent workflows do not set this flag.
+- `$derive` runs during rendering. Use it only in trusted local documents.
 
 ## Consumption
 
@@ -79,7 +79,7 @@ Inside `X[]...`, missing fields or out-of-bounds indices on individual elements 
 
 `$derive` lambdas are evaluated synchronously in a constrained `vm` sandbox with a 200ms timeout. The sandbox provides `Math`, `JSON`, `Number`, `String`, `Boolean`, `Symbol`, `Date`, `Map`, `Set`, `RegExp`, `Array`, `Object`, and common static methods. It does **not** provide `process`, `require`, `module`, `globalThis`, `Buffer`, timers, `fetch`, or any DOM/BOM.
 
-This is a "prevent accidental misuse + limit time" layer, not an adversarial sandbox. The blocked globals above are not intentionally supplied, but `vm` contexts still expose intrinsics reachable through constructor chains (e.g. `Object.constructor.constructor`); do not rely on their absence for adversarial isolation. `$derive` stays gated behind `--trusted-mdx`.
+This is a "prevent accidental misuse + limit time" layer, not an adversarial sandbox. The blocked globals above are not intentionally supplied, but `vm` contexts still expose intrinsics reachable through constructor chains (e.g. `Object.constructor.constructor`); do not rely on their absence for adversarial isolation. Use `$derive` only with trusted local input.
 
 ## Error codes
 
@@ -89,7 +89,6 @@ This is a "prevent accidental misuse + limit time" layer, not an adversarial san
 | `SMC_DATA_REDECLARED` | a declaration or derived name collides with an existing one |
 | `SMC_INVALID_DATA_NAME` | a declaration or derived name is not a valid identifier |
 | `SMC_INVALID_PROJECTION` | `from` projection syntax is invalid, or `from` is used on a component without a data slot |
-| `SMC_FORBIDDEN_DATA_TRANSFORM` | `$derive` is present but `--trusted-mdx` is not set |
 | `SMC_DATA_TRANSFORM_ERROR` | a `$derive` lambda threw, timed out, or reached a blocked global |
 | `SMC_DATA_SOURCE_CONFLICT` | `$inline`+`$src` both given, or `from`+native data prop both given |
 | `SMC_INVALID_DATA_SOURCE` | `$inline` unparseable, or `$src` file unreadable or not valid JSON |
@@ -100,6 +99,7 @@ This is a "prevent accidental misuse + limit time" layer, not an adversarial san
 - Reuse the same rows across multiple `Table` calls.
 - Share one chart configuration between prose and a `Chart`.
 - Keep large data out of the MDX body via `$src`.
-- Compute a derived subset (filtered/mapped) once under `--trusted-mdx` and feed several components.
+- Compute a derived subset (filtered/mapped) once and feed several components.
 
-Do not use `$derive` in default agent workflows; it requires `--trusted-mdx` and is not part of the safe content surface.
+Use `$derive` only when the document is trusted local input and the transform
+keeps repeated component data clearer than external preprocessing.

@@ -26,10 +26,7 @@ export async function renderToHtml(options: RenderOptions): Promise<{ html: stri
   const document = await loadDocument(input)
   const theme = options.theme ?? document.frontmatter.theme ?? config.theme
 
-  const validation = await validateDocument(document, registry, config, {
-    trustedMdx: options.trustedMdx,
-    cwd,
-  })
+  const validation = await validateDocument(document, registry, config, { cwd })
   if (!validation.ok) throw new CanvasValidationException(validation.errors)
 
   const outputSource = await resolveDataSources(
@@ -37,7 +34,6 @@ export async function renderToHtml(options: RenderOptions): Promise<{ html: stri
     registry,
     validation.analysis,
     cwd,
-    options.trustedMdx === true,
   )
   const evaluated = await evaluate(outputSource, {
     ...mdxRuntime,
@@ -72,14 +68,12 @@ async function resolveDataSources(
   registry: CanvasRegistry,
   analysis: DocumentAnalysis | undefined,
   cwd: string,
-  trustedMdx: boolean,
 ): Promise<string> {
   if (!analysis) return document.content
 
   const data = await resolveDocumentData(document.frontmatter, {
     cwd,
     docDir: path.dirname(document.path),
-    trustedMdx,
     file: document.path,
   })
   if (data.errors.length > 0) throw new CanvasValidationException(data.errors)
