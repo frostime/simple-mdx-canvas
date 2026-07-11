@@ -18,6 +18,7 @@ The reader of this skill is an external Agent. The Agent's job is to write compl
 - **Semantic component**: a registered MDX component such as `Chart`, `Callout`, `Table`, or `Grid`.
 - **Bulma JSX**: small JSX fragments in MDX that use Bulma CSS classes through React-style attributes, for example `className="box"`.
 - **HtmlBlock**: a registered component that injects raw HTML from fenced `html` children.
+- **Static extension component**: a trusted local TSX component registered through an authoring project's manifest. It is server-rendered into the artifact and does not receive browser React hydration.
 
 ## Output Contract
 
@@ -74,6 +75,11 @@ Components are optional tools. The Agent should choose the document structure fr
 Canvas documents are trusted local authoring inputs. JSX expressions and
 `HtmlBlock` fragments may execute during rendering. Prefer literal props and
 frontmatter data when they express the document clearly.
+
+`HtmlBlock` may use native browser DOM behavior such as `addEventListener` for
+a small document-local fragment. It is not a React component hydration path:
+keep the behavior self-contained, and do not use it as a substitute for a
+reusable component contract.
 
 Do not write:
 
@@ -146,6 +152,13 @@ Markdown content for the second option.
 </HtmlBlock>
 ```
 
+## Scenario Patterns
+
+Choose a structure from the user's task; scenario patterns are references, not
+required document outlines. Read `references/scenario-patterns.md` when
+selecting between a narrative brief, data dashboard, decision record, local DOM
+fragment, or extension project.
+
 ## Reference Map
 
 Read only what is needed:
@@ -171,6 +184,9 @@ If component availability is uncertain, run:
 ```bash
 simple-mdx-canvas list-components
 ```
+
+A static extension component is available only when the authoring project has a
+registered local manifest. Document source must still not import it directly.
 
 ## Minimal Syntax Example
 

@@ -43,4 +43,6 @@ Use a fenced `html` code block inside `HtmlBlock`. Do not write JSX children suc
 
 - `HtmlBlock` injects children as raw HTML.
 - Use it for Bulma HTML snippets, embeds, small scripts, and custom visual fragments.
+- A small document-local script may use native DOM listeners such as `addEventListener`. Scope selectors to the fragment and keep state local.
+- This is not React hydration or a reusable component contract. Use a registered static extension component when behavior needs reusable props or validation.
 - Do not include full-page wrappers such as `<html>`, `<head>`, or `<body>`.
