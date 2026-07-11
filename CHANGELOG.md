@@ -5,7 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Changed
+### Added
++- Published JavaScript and type entrypoints for `defineConfig`.
++- Trusted local TS/TSX config, manifest, and static component loading through one extension boundary.
++- Packed-package smoke coverage for `init`, `list-components`, `validate`, and `render` with a TSX component and relative import.
++
++### Changed
 - **Breaking:** `render` always validates; `--no-validate` and `--trusted-mdx` are removed.
 - **Breaking:** `$derive` runs for trusted local documents without a CLI flag.
 - Document-level import/export remain unsupported; direct scripts, styles, event handlers, and `javascript:` links are rejected.

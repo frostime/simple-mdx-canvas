@@ -100,6 +100,11 @@ program
       await writeFile(configPath, defaultConfigTemplate(), 'utf8')
     }
 
+    const tsconfigPath = path.join(root, 'tsconfig.json')
+    if (!existsSync(tsconfigPath)) {
+      await writeFile(tsconfigPath, extensionTsconfigTemplate(), 'utf8')
+    }
+
     const manifestPath = path.join(root, 'components.manifest.ts')
     if (!existsSync(manifestPath)) {
       await writeFile(manifestPath, 'export default []\n', 'utf8')
@@ -145,4 +150,8 @@ function openUrl(url: string) {
 
 function defaultConfigTemplate(): string {
   return `import { defineConfig } from 'simple-mdx-canvas'\n\nexport default defineConfig({\n  theme: 'default',\n  components: {\n    manifest: '.simple-mdx-canvas/components.manifest.ts'\n  },\n  themes: {\n    localDir: '.simple-mdx-canvas/themes'\n  }\n})\n`
+}
+
+function extensionTsconfigTemplate(): string {
+  return `{\n  "compilerOptions": {\n    "target": "ES2022",\n    "module": "NodeNext",\n    "moduleResolution": "NodeNext",\n    "jsx": "react-jsx",\n    "allowImportingTsExtensions": true,\n    "noEmit": true\n  },\n  "include": ["**/*"]\n}\n`
 }

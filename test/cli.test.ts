@@ -42,12 +42,17 @@ test('init writes only supported configuration fields', async () => {
   const cwd = await mkdtemp(path.join(tmpdir(), 'smc-init-'))
   try {
     const initialized = await runCli(['init'], cwd)
-    const config = await readFile(path.join(cwd, 'simple-mdx-canvas.config.ts'), 'utf8')
+    const [config, tsconfig] = await Promise.all([
+      readFile(path.join(cwd, 'simple-mdx-canvas.config.ts'), 'utf8'),
+      readFile(path.join(cwd, '.simple-mdx-canvas', 'tsconfig.json'), 'utf8'),
+    ])
 
     assert.equal(initialized.code, 0)
     assert.match(config, /components:/)
     assert.match(config, /themes:/)
     assert.doesNotMatch(config, /snippets|selfContained|allowImports|allowExports|allowRawHtml/)
+    assert.match(tsconfig, /"jsx": "react-jsx"/)
+    assert.match(tsconfig, /"include": \["\*\*\/\*"\]/)
   } finally {
     await rm(cwd, { recursive: true, force: true })
   }

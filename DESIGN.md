@@ -58,7 +58,8 @@ Defines delivery mode:
 
 ### Extension
 
-Local user extension through config directories and manifest files.
+Trusted local config, manifest, and static component modules loaded through one
+TypeScript/TSX compilation boundary. Document MDX cannot import extension code.
 
 ### Validator
 
@@ -192,16 +193,31 @@ Custom themes should override Bulma CSS variables directly. `--canvas-*` variabl
 
 ## 10. Extension Design
 
-The planned extension contract is:
+The extension boundary is `src/extensions/load-module.ts`. It owns supported
+file extensions, Windows-safe file URL conversion, `tsx` registration, and
+module-load diagnostics. `config.ts` and `components/registry.ts` must call
+that boundary rather than importing local source modules themselves.
+
+`smc init` creates the extension-local TypeScript configuration:
 
 ```text
 .simple-mdx-canvas/
   components/
   themes/
   components.manifest.ts
+  tsconfig.json
 ```
 
-A component manifest exports component metadata and optional schemas. Duplicate component names are rejected.
+The local `tsconfig.json` is deliberate: `tsx` excludes dot-directories from
+its default glob, so a TSX manifest or component under `.simple-mdx-canvas/`
+must be compiled with an explicit configuration. Keeping it inside the
+extension directory avoids changing an authoring project's root TypeScript
+configuration.
+
+The manifest default-exports static component metadata. Duplicate component
+names are rejected before MDX evaluation. The loader accepts `.ts`, `.tsx`,
+`.js`, and `.mjs`; relative imports resolve from extension source. Browser
+bundling and hydration are not part of this boundary.
 
 ## 11. Implementation Notes
 

@@ -12,7 +12,9 @@ Verification:
 npm run verify --silent
 ```
 
-`verify` runs type checking, tests, build, and the example validate/render flow.
+`verify` runs type checking, source tests, build, example validate/render, and
+an installed-tarball smoke test for `init`, static TSX extensions, validation,
+and rendering.
 
 When changing MDX syntax, built-in components, validation rules, rendering behavior, or visual output, update all affected docs/examples/skills in the same change.
 

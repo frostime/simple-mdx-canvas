@@ -189,18 +189,33 @@ The component set is deliberately small. Markdown remains the default representa
 
 ## 8. User Extensions
 
-Users can register custom TSX components through a local manifest.
+Users can register static TypeScript or TSX components through a local manifest.
 
-Default extension location:
+Default extension location after `smc init`:
 
 ```text
 .simple-mdx-canvas/
   components/
   themes/
   components.manifest.ts
+  tsconfig.json
 ```
 
-User components are local trusted code. MDX documents remain content artifacts and should not import arbitrary code directly.
+The config, manifest, and component modules are trusted local code. They may
+use relative `.ts` or `.tsx` imports. The manifest default-exports an array;
+every entry requires a capitalized name, non-empty description, and component
+function. Built-in and user names share one registry, so any duplicate is an
+error.
+
+The generated extension `tsconfig.json` selects NodeNext and `react-jsx` for
+that hidden directory. TSX extension projects must declare `react` as a direct
+runtime dependency so the automatic JSX runtime resolves from component source.
+Static components may accept Markdown children only when
+`allowMarkdownChildren` is true. They render into the HTML artifact without
+browser hydration.
+
+MDX documents remain content artifacts and must not import arbitrary code
+ directly.
 
 ## 9. Theme System
 

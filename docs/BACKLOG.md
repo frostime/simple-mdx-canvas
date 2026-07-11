@@ -36,8 +36,8 @@ file as end-user documentation.
 
 - Built-in and user components share one registry. A duplicate name is an
   error; users do not override built-ins.
-- User extensions are trusted TypeScript or TSX source. The CLI owns loading
-  and compilation of their config, manifest, and component modules.
+- User extensions are trusted TypeScript or TSX source. The extension-loading
+  boundary owns compilation of their config, manifest, and component modules.
 - A user component can be static or interactive. Static components may receive
   Markdown children. Interactive components render on the server and hydrate in
   the browser as isolated component roots; their props must be JSON-serializable

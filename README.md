@@ -6,7 +6,17 @@ It lets an agent write one `.mdx` document with GFM Markdown, math notation, and
 
 ## Install
 
-`simple-mdx-canvas` is a normal Node-compatible CLI package. Bun is optional and not part of the user-facing contract.
+`simple-mdx-canvas` requires Node 22 or newer. Bun is optional and not part of
+the user-facing contract.
+
+Install it in an authoring project:
+
+```bash
+npm install simple-mdx-canvas
+npx smc init
+```
+
+`init` creates `simple-mdx-canvas.config.ts` and the local extension directory.
 
 Local development:
 
@@ -49,6 +59,60 @@ smc list-components
 ```
 
 The CLI is implemented with `commander`; command parsing is centralized in `src/cli.ts` rather than handwritten flag scanning.
+
+## Static Extensions
+
+`smc init` creates this local extension layout:
+
+```text
+.simple-mdx-canvas/
+  components/
+  themes/
+  components.manifest.ts
+  tsconfig.json
+```
+
+The manifest default-exports an array. Each entry needs a capitalized `name`, a
+non-empty `description`, and a static React `component`; duplicate names,
+including built-in names, are rejected. Components may import local `.ts` or
+`.tsx` modules relative to their source file.
+
+TSX extensions use React's automatic JSX runtime. Add `react` as a direct
+runtime dependency of the authoring project before adding a TSX component:
+
+```bash
+npm install react
+```
+
+`init` creates `.simple-mdx-canvas/tsconfig.json` with the required TSX options.
+For a manually created extension directory, keep an equivalent config there.
+Static components may receive Markdown children when
+`allowMarkdownChildren` is true. Browser hydration is not supported yet.
+
+```ts
+// .simple-mdx-canvas/components/label.ts
+export const label = 'Status'
+
+// .simple-mdx-canvas/components/badge.tsx
+import { label } from './label.ts'
+
+export default function Badge({ value }: { value: string }) {
+  return <strong>{label}: {value}</strong>
+}
+
+// .simple-mdx-canvas/components.manifest.ts
+import Badge from './components/badge.tsx'
+
+export default [{
+  name: 'Badge',
+  description: 'Render a local status badge.',
+  component: Badge,
+  allowMarkdownChildren: false,
+}]
+```
+
+After registration, `<Badge value="ready" />` is available to `validate` and
+`render`; `smc list-components` displays it alongside built-ins.
 
 ## Styling
 

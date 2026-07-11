@@ -63,7 +63,8 @@ src/
   cli.ts          command parsing and process boundaries
   config.ts       public configuration contract and config discovery
   document/       source loading, frontmatter data, MDX analysis, validation
-  components/     built-ins, registry, extension loading
+  components/     built-ins and registry
+  extensions/     trusted local config, manifest, and component module loading
   render/         HTML rendering, shell, theme and renderer-owned assets
   contracts.ts    public cross-area types only when ownership is genuinely shared
 ```
@@ -78,7 +79,7 @@ sketch.
 cli -> config, components, document, render
 render -> document analysis, component registry, renderer assets
 document validation -> document analysis, component registry
-components extension loader -> config, component contracts
+config, components -> extensions
 ```
 
 `document` must not depend on HTML shell details. `components` must not depend
@@ -168,6 +169,8 @@ Acceptance:
 - A render command cannot emit HTML after validation errors.
 
 ### Phase 3: Repair Package Delivery and Static Extensions
+
+Status: implementation complete, acceptance pending.
 
 Goal: make the installed CLI and documented static TS/TSX user components work
 on Node 22 and Node 24.

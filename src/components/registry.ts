@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
-import { pathToFileURL } from 'node:url'
 import type { CanvasConfig, CanvasComponentManifest, CanvasRegistry } from '../contracts.js'
+import { loadExtensionModule } from '../extensions/load-module.js'
 import {
   Chart,
   Columns,
@@ -223,11 +223,11 @@ export async function loadRegistry(config: CanvasConfig, cwd: string): Promise<C
     : path.resolve(cwd, '.simple-mdx-canvas/components.manifest.ts')
 
   if (existsSync(manifestFile)) {
-    const mod = await import(pathToFileURL(manifestFile).href)
-    const userManifests = (mod.default ?? mod.manifests ?? []) as CanvasComponentManifest<any>[]
+    const mod = await loadExtensionModule(manifestFile, cwd)
+    const userManifests = readUserManifests(mod, manifestFile)
     for (const manifest of userManifests) {
       if (manifests.has(manifest.name)) {
-        throw new Error(`Duplicate component name: ${manifest.name}`)
+        throw new Error(`Duplicate component name "${manifest.name}" in "${manifestFile}".`)
       }
       manifests.set(manifest.name, manifest)
     }
@@ -237,6 +237,52 @@ export async function loadRegistry(config: CanvasConfig, cwd: string): Promise<C
     manifests,
     components: Object.fromEntries(Array.from(manifests).map(([name, manifest]) => [name, manifest.component])),
   }
+}
+
+function readUserManifests(mod: Record<string, unknown>, file: string): CanvasComponentManifest<any>[] {
+  const manifests = mod.default ?? mod.manifests
+  if (!Array.isArray(manifests)) {
+    throw new Error(`Component manifest "${file}" must default export an array or export one as "manifests".`)
+  }
+
+  return manifests.map((manifest, index) => validateUserManifest(manifest, file, index))
+}
+
+function validateUserManifest(value: unknown, file: string, index: number): CanvasComponentManifest<any> {
+  if (!isRecord(value)) {
+    throw new Error(`Component manifest "${file}" entry ${index + 1} must be an object.`)
+  }
+  if (typeof value.name !== 'string' || !/^[A-Z][A-Za-z0-9]*$/.test(value.name)) {
+    throw new Error(`Component manifest "${file}" entry ${index + 1} needs a capitalized component name.`)
+  }
+  if (typeof value.description !== 'string' || value.description.trim() === '') {
+    throw new Error(`Component manifest "${file}" entry "${value.name}" needs a description.`)
+  }
+  if (typeof value.component !== 'function') {
+    throw new Error(`Component manifest "${file}" entry "${value.name}" needs a component function.`)
+  }
+  if (value.schema !== undefined && !hasSafeParse(value.schema)) {
+    throw new Error(`Component manifest "${file}" entry "${value.name}" has an invalid schema.`)
+  }
+  if (value.allowMarkdownChildren !== undefined && typeof value.allowMarkdownChildren !== 'boolean') {
+    throw new Error(`Component manifest "${file}" entry "${value.name}" has a non-boolean allowMarkdownChildren value.`)
+  }
+  if (value.examples !== undefined && (!Array.isArray(value.examples) || value.examples.some((example) => typeof example !== 'string'))) {
+    throw new Error(`Component manifest "${file}" entry "${value.name}" has invalid examples.`)
+  }
+  if (value.dataProp !== undefined && typeof value.dataProp !== 'string') {
+    throw new Error(`Component manifest "${file}" entry "${value.name}" has an invalid dataProp.`)
+  }
+
+  return value as CanvasComponentManifest<any>
+}
+
+function hasSafeParse(value: unknown): value is { safeParse: unknown } {
+  return isRecord(value) && typeof value.safeParse === 'function'
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
 export function listComponentManifests(registry: CanvasRegistry): CanvasComponentManifest<any>[] {

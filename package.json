@@ -3,20 +3,23 @@
   "version": "0.2.0",
   "description": "Agent-facing single-page MDX canvas renderer: GFM Markdown plus controlled visual components to HTML.",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "bin": {
     "simple-mdx-canvas": "./dist/cli.js",
     "smc": "./dist/cli.js"
   },
   "files": [
     "dist",
-    "src",
-    "docs",
-    "examples",
-    "templates",
     "skills",
     "README.md",
-    "SPEC.md",
-    "DESIGN.md"
+    "LICENSE"
   ],
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.json && node scripts/copy-assets.mjs",
@@ -26,7 +29,8 @@
     "serve:example": "node dist/cli.js serve examples/report.mdx --port 4321",
     "check": "tsc -p tsconfig.json --noEmit",
     "test": "tsx --test test/*.test.ts",
-    "verify": "npm run check && npm test && npm run build && npm run validate:example && npm run render:example",
+    "test:package": "tsx --test test/package/*.test.ts",
+    "verify": "npm run check && npm test && npm run build && npm run validate:example && npm run render:example && npm run test:package",
     "prepack": "npm run build",
     "clean": "node scripts/clean.mjs"
   },
@@ -43,16 +47,16 @@
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "tsx": "^4.20.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "tsx": "^4.20.0",
     "typescript": "^5.8.0"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }
