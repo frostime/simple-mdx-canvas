@@ -1,0 +1,42 @@
+---
+title: "Static TSX Extension Demo"
+description: "A document using a trusted local component with a relative TypeScript import."
+theme: "default"
+---
+
+# Static TSX Extension Demo
+
+<Callout type="summary" title="What this demonstrates">
+`MetricLabel` is not built into simple-mdx-canvas. It is registered from the
+local `.simple-mdx-canvas/components.manifest.ts` file and server-rendered into
+this HTML artifact.
+</Callout>
+
+<Grid columns={3}>
+<Cell>
+<MetricLabel label="Build health" value="99.95" trend="up" />
+</Cell>
+<Cell>
+<MetricLabel label="On-call acknowledgement" value="92" trend="steady" />
+</Cell>
+<Cell>
+<MetricLabel label="Escalation backlog" value="14" trend="down" />
+</Cell>
+</Grid>
+
+## Extension facts
+
+- `MetricLabel` is a local `.tsx` component.
+- It imports `format.ts` relative to its source file.
+- The manifest makes its name available to validation and rendering.
+- The component is static: it renders server-side and receives no browser hydration.
+
+<PromptBox title="Try it">
+
+```text
+From examples/extension-demo, run list-components, validate profile.mdx, then
+render profile.mdx to profile.html. Change the values above and render again to
+see the static component update.
+```
+
+</PromptBox>

@@ -1,0 +1,76 @@
+---
+title: "HtmlBlock DOM Demo"
+description: "A trusted raw HTML fragment with small native browser behavior."
+theme: "default"
+---
+
+# HtmlBlock DOM Demo
+
+<Callout type="warning" title="Trust boundary">
+`HtmlBlock` injects raw local HTML and JavaScript. Use it for small, contained
+behavior when a reusable static component is not warranted.
+</Callout>
+
+The counter below is native DOM code. It changes browser DOM state directly; it
+is not a hydrated React component and does not add a document-level `onClick`.
+
+<HtmlBlock>
+
+```html
+<section class="box" data-counter-demo>
+  <p class="heading">Local counter</p>
+  <p class="title is-2" data-counter-value>0</p>
+  <div class="buttons">
+    <button class="button is-primary" type="button" data-counter-increment>Increment</button>
+    <button class="button is-light" type="button" data-counter-reset>Reset</button>
+  </div>
+  <p class="is-size-7 has-text-grey" data-counter-status>Ready</p>
+</section>
+<script>
+(function () {
+  var script = document.currentScript;
+  var root = script ? script.previousElementSibling : null;
+  if (!root) return;
+
+  var value = 0;
+  var output = root.querySelector('[data-counter-value]');
+  var status = root.querySelector('[data-counter-status]');
+  var increment = root.querySelector('[data-counter-increment]');
+  var reset = root.querySelector('[data-counter-reset]');
+
+  function render(message) {
+    output.textContent = String(value);
+    status.textContent = message;
+  }
+
+  increment.addEventListener('click', function () {
+    value += 1;
+    render('Incremented locally in this HTML artifact.');
+  });
+
+  reset.addEventListener('click', function () {
+    value = 0;
+    render('Reset.');
+  });
+}());
+</script>
+```
+
+</HtmlBlock>
+
+## When this is appropriate
+
+- A small embed, visualization, or DOM behavior belongs in one document.
+- The behavior does not need reusable props, a component schema, or React state.
+- The author owns and trusts the document source.
+
+<Callout type="tip" title="Reusable behavior">
+When this behavior needs to appear in several documents, move it into a trusted
+static TSX extension instead of copying the script.
+</Callout>
+
+## Render command
+
+```bash
+node dist/cli.js render examples/html-block-demo.mdx -o examples/html-block-demo.html
+```

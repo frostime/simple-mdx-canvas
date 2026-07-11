@@ -1,0 +1,28 @@
+:root {
+  --canvas-page-width: 980px;
+  --canvas-toolbar-background: color-mix(in srgb, #eef8f7 92%, transparent);
+  --bulma-primary: #147d78;
+  --bulma-link: #2e5aac;
+  --bulma-success: #208653;
+  --bulma-warning: #d98f1c;
+  --bulma-danger: #c34455;
+  --bulma-border: #bfd8d4;
+}
+
+[data-theme='dark'] {
+  --canvas-toolbar-background: color-mix(in srgb, #152d2c 90%, transparent);
+  --bulma-primary: #47c2b9;
+  --bulma-link: #7da7ff;
+  --bulma-success: #71d49a;
+  --bulma-warning: #f2c364;
+  --bulma-danger: #ef8794;
+  --bulma-border: #406260;
+}
+
+.canvas-page > h1 {
+  color: var(--bulma-primary);
+}
+
+.chart-container {
+  min-height: 360px;
+}

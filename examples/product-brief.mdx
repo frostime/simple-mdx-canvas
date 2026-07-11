@@ -1,0 +1,131 @@
+---
+title: "Atlas Release Brief"
+description: "A product launch brief built from static MDX components."
+theme: "default"
+---
+
+<Tags>
+<Tag color="primary" light>Launch brief</Tag>
+<Tag color="success" light>On track</Tag>
+<Tag color="info" light>Static HTML</Tag>
+</Tags>
+
+# Atlas Release Brief
+
+<Callout type="summary" title="Release decision">
+Proceed with the limited launch on Tuesday. The remaining work is operational
+coordination, not a product-quality blocker.
+</Callout>
+
+## The problem
+
+Atlas gives support teams one place to review customer escalation context before
+an incident handoff. The release artifact needs to make the decision, evidence,
+and next actions easy to scan without requiring a live application.
+
+<Columns>
+<Column title="Audience">
+
+- Support leads preparing a handoff
+- Incident managers reviewing risk
+- Product owners tracking launch readiness
+
+</Column>
+<Column title="Release scope">
+
+- Customer timeline summary
+- Escalation ownership fields
+- Exportable incident packet
+
+</Column>
+</Columns>
+
+## Readiness
+
+<Cards>
+<Card title="Product">
+
+The guided escalation flow is complete. Usability testing found no blocker in
+the primary handoff path.
+
+</Card>
+<Card title="Operations">
+
+On-call playbooks and support enablement are ready. The launch owner remains
+responsible for the first-week review.
+
+</Card>
+<Card title="Risk">
+
+The only open risk is delayed CRM synchronization. A manual fallback exists for
+the launch cohort.
+
+</Card>
+</Cards>
+
+<Grid columns={3}>
+<Cell>
+<Callout type="tip" title="Adoption target">
+Reach 20 active support leads in the first two weeks.
+</Callout>
+</Cell>
+<Cell>
+<Callout type="warning" title="Watch metric">
+Escalation packet generation should remain below 30 seconds at the 95th percentile.
+</Callout>
+</Cell>
+<Cell>
+<Callout type="definition" title="Launch cohort">
+Teams with an assigned incident manager and a verified CRM integration.
+</Callout>
+</Cell>
+</Grid>
+
+<Figure
+  src="./assets/release-readiness.svg"
+  alt="Release readiness diagram showing product, operations, and risk gates"
+  caption="All launch gates are green except the monitored CRM synchronization risk."
+  source="Atlas release review"
+/>
+
+## Rollout choices
+
+<Tabs>
+<Tab title="Limited launch">
+
+Start with the launch cohort, review the first ten escalation packets, and
+expand after the Tuesday and Friday operating reviews.
+
+</Tab>
+<Tab title="Full launch">
+
+Release to every support team immediately. This saves coordination time but
+increases the blast radius of the CRM synchronization risk.
+
+</Tab>
+<Tab title="Hold">
+
+Wait for the CRM sync hardening work. This removes the manual fallback but
+delays the validated support workflow.
+
+</Tab>
+</Tabs>
+
+## Launch note
+
+<PromptBox title="Message for the launch channel">
+
+```text
+Atlas limited launch begins Tuesday at 09:00. Use the escalation packet for all
+cohort handoffs. Report CRM synchronization delays in #atlas-launch and include
+the packet URL, customer account, and incident priority.
+```
+
+</PromptBox>
+
+## First-week checklist
+
+1. Confirm cohort access before Tuesday morning.
+2. Review the first ten generated escalation packets with support leads.
+3. Track CRM synchronization delays and manual fallback usage.
+4. Decide whether to expand the cohort at Friday's operating review.

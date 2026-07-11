@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">Release readiness gates</title>
+  <desc id="desc">Product and operations gates are ready. CRM synchronization is monitored.</desc>
+  <rect width="960" height="420" fill="#f5fbfb"/>
+  <text x="54" y="72" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#173b3b">Atlas release readiness</text>
+  <text x="54" y="108" font-family="Arial, sans-serif" font-size="18" fill="#4a6464">Limited launch review</text>
+  <line x1="160" y1="224" x2="800" y2="224" stroke="#bdd5d5" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="220" cy="224" r="48" fill="#1f9d8b"/>
+  <circle cx="480" cy="224" r="48" fill="#1f9d8b"/>
+  <circle cx="740" cy="224" r="48" fill="#f0a94a"/>
+  <path d="M198 224l15 15 31-35" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M458 224l15 15 31-35" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M740 195v37" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="740" cy="250" r="5" fill="#ffffff"/>
+  <text x="171" y="308" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#173b3b">Product</text>
+  <text x="134" y="338" font-family="Arial, sans-serif" font-size="17" fill="#4a6464">Workflow validated</text>
+  <text x="412" y="308" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#173b3b">Operations</text>
+  <text x="390" y="338" font-family="Arial, sans-serif" font-size="17" fill="#4a6464">Playbooks ready</text>
+  <text x="693" y="308" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#173b3b">CRM sync</text>
+  <text x="661" y="338" font-family="Arial, sans-serif" font-size="17" fill="#4a6464">Monitor fallback</text>
+</svg>

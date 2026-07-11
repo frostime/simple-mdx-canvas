@@ -1,0 +1,13 @@
+{
+  "services": [
+    { "name": "API", "availability": "99.98%", "latency": 142, "owner": "Platform" },
+    { "name": "Search", "availability": "99.94%", "latency": 286, "owner": "Discovery" },
+    { "name": "Ingestion", "availability": "99.99%", "latency": 118, "owner": "Data" },
+    { "name": "Billing", "availability": "99.96%", "latency": 201, "owner": "Payments" }
+  ],
+  "incidents": [
+    { "id": "INC-184", "service": "Search", "severity": "SEV-2", "owner": "Discovery", "status": "mitigating" },
+    { "id": "INC-179", "service": "Billing", "severity": "SEV-3", "owner": "Payments", "status": "monitoring" },
+    { "id": "INC-171", "service": "API", "severity": "SEV-3", "owner": "Platform", "status": "resolved" }
+  ]
+}

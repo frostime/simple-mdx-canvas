@@ -1,0 +1,62 @@
+---
+title: "Signal Theme Status"
+description: "A local CSS theme demonstration."
+theme: "signal"
+---
+
+<Tags>
+<Tag color="primary" light>Local theme</Tag>
+<Tag color="success" light>Healthy</Tag>
+</Tags>
+
+# Signal Theme Status
+
+<Callout type="summary" title="Theme scope">
+This document selects `themes/signal.css` from its local project config. The
+renderer still owns the HTML shell, Bulma baseline, color-mode toggle, and chart
+runtime.
+</Callout>
+
+<Grid columns={3}>
+<Cell>
+<Callout type="tip" title="Queue">42 jobs waiting, within the target range.</Callout>
+</Cell>
+<Cell>
+<Callout type="definition" title="Coverage">99.7% of scheduled checks completed.</Callout>
+</Cell>
+<Cell>
+<Callout type="warning" title="Follow-up">One regional alert needs acknowledgement.</Callout>
+</Cell>
+</Grid>
+
+<Chart
+  title="Checks completed by hour"
+  config='{
+    "type": "line",
+    "data": {
+      "labels": ["08:00", "10:00", "12:00", "14:00", "16:00"],
+      "datasets": [{
+        "label": "Completed checks",
+        "data": [42, 67, 91, 108, 126],
+        "borderColor": "#147d78",
+        "backgroundColor": "rgba(20, 125, 120, 0.18)",
+        "fill": true,
+        "tension": 0.25
+      }]
+    },
+    "options": {
+      "scales": { "y": { "beginAtZero": true } }
+    }
+  }'
+/>
+
+<Table
+  columns='["region","status","owner"]'
+  data='[
+    {"region":"North","status":"Healthy","owner":"Avery"},
+    {"region":"West","status":"Watching","owner":"Morgan"},
+    {"region":"South","status":"Healthy","owner":"Riley"}
+  ]'
+/>
+
+<PromptBox title="Try the color toggle" text="Use the toolbar button to switch color mode. The local theme overrides Bulma and canvas variables in both modes." />

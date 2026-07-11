@@ -1,0 +1,98 @@
+---
+title: "Decision Record: Customer Export Format"
+description: "A compact architecture decision record rendered as a standalone page."
+theme: "default"
+---
+
+# Decision Record: Customer Export Format
+
+<Tags>
+<Tag color="primary" light>ADR</Tag>
+<Tag color="success" light>Accepted</Tag>
+<Tag color="light">2026-07-11</Tag>
+</Tags>
+
+<Callout type="summary" title="Decision">
+Generate a CSV export for the first release and preserve JSON as an internal API
+format. Do not add an XLSX dependency until users need workbook-specific behavior.
+</Callout>
+
+## Context
+
+Support teams need a spreadsheet-compatible artifact for customer account
+reviews. The export must work offline, remain easy to inspect in version
+control, and not expand the renderer into a data pipeline.
+
+## Options considered
+
+<Tabs>
+<Tab title="CSV">
+
+- Opens in spreadsheet software without additional tooling
+- Small, diffable, and easy to generate
+- Requires clear escaping and column ownership rules
+
+</Tab>
+<Tab title="XLSX">
+
+- Supports multiple sheets and formatting
+- Adds a binary format and a substantial dependency surface
+- Needs workbook-level tests and migration behavior
+
+</Tab>
+<Tab title="JSON only">
+
+- Preserves structured data exactly
+- Useful for APIs and automation
+- Not convenient for the support workflow that prompted this work
+
+</Tab>
+</Tabs>
+
+## Decision matrix
+
+<Table
+  columns='[
+    { "key": "option", "label": "Option" },
+    { "key": "workflow", "label": "Support workflow", "align": "center" },
+    { "key": "complexity", "label": "Implementation cost", "align": "center" },
+    { "key": "decision", "label": "Decision" }
+  ]'
+  data='[
+    { "option": "CSV", "workflow": "Strong", "complexity": "Low", "decision": "Adopt" },
+    { "option": "XLSX", "workflow": "Strong", "complexity": "High", "decision": "Defer" },
+    { "option": "JSON only", "workflow": "Weak", "complexity": "Low", "decision": "Keep internal" }
+  ]'
+/>
+
+## Consequences
+
+<Columns>
+<Column title="Positive">
+
+- A support lead can open the artifact immediately.
+- The implementation remains text-first and testable.
+- JSON remains available where structured automation is more appropriate.
+
+</Column>
+<Column title="Trade-off">
+
+- CSV cannot represent workbook formatting or multiple related datasets.
+- A future XLSX request requires an explicit new package and test contract.
+
+</Column>
+</Columns>
+
+<Callout type="warning" title="Boundary">
+This decision does not authorize a general export framework. Add new formats
+only when a concrete workflow needs them.
+</Callout>
+
+<PromptBox title="Follow-up issue">
+
+```text
+Implement CSV export for account review rows. Define escaping rules, stable
+column order, empty-value behavior, and tests for commas, quotes, and newlines.
+```
+
+</PromptBox>

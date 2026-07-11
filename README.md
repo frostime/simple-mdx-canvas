@@ -60,6 +60,13 @@ smc list-components
 
 The CLI is implemented with `commander`; command parsing is centralized in `src/cli.ts` rather than handwritten flag scanning.
 
+## Examples
+
+The [examples guide](./examples/README.md) contains independent documents for a
+product brief, data-driven operations dashboard, decision record, trusted
+`HtmlBlock` behavior, local theme project, and static TSX extension project.
+Each example includes validate and render commands.
+
 ## Static Extensions
 
 `smc init` creates this local extension layout:

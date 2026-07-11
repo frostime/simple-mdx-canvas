@@ -1,0 +1,82 @@
+---
+title: "Service Operations Dashboard"
+description: "External JSON, derived data, projections, tables, and Chart.js."
+theme: "default"
+data:
+  operations:
+    $src: data/operations.json
+    $derive:
+      serviceRows: 'r => r.services.map(service => ({ service: service.name, availability: service.availability, latency: service.latency, owner: service.owner }))'
+      openIncidents: 'r => r.incidents.filter(incident => incident.status !== "resolved")'
+      latencyChart: 'r => ({ type: "bar", data: { labels: r.services.map(service => service.name), datasets: [{ label: "P95 latency (ms)", data: r.services.map(service => service.latency), backgroundColor: ["#00d1b2", "#3273dc", "#ffdd57", "#ff6685"] }] }, options: { scales: { y: { beginAtZero: true } } } })'
+---
+
+# Service Operations Dashboard
+
+<Callout type="summary" title="Current posture">
+Core services are within the availability target. Two open incidents need owner
+follow-up before the regional traffic increase.
+</Callout>
+
+<Tags>
+<Tag color="success" light>Availability stable</Tag>
+<Tag color="warning" light>2 open incidents</Tag>
+<Tag color="info" light>Data from JSON</Tag>
+</Tags>
+
+## Service health
+
+<Table
+  from="serviceRows"
+  columns='[
+    { "key": "service", "label": "Service" },
+    { "key": "availability", "label": "Availability", "align": "right" },
+    { "key": "latency", "label": "P95 ms", "align": "right" },
+    { "key": "owner", "label": "Owner" }
+  ]'
+/>
+
+<Chart
+  from="latencyChart"
+  title="P95 latency by service"
+  description="Values are derived from examples/data/operations.json during rendering."
+/>
+
+## Incidents requiring attention
+
+<Table
+  from="openIncidents"
+  columns='[
+    { "key": "id", "label": "Incident" },
+    { "key": "service", "label": "Service" },
+    { "key": "severity", "label": "Severity", "align": "center" },
+    { "key": "owner", "label": "Owner" },
+    { "key": "status", "label": "Status" }
+  ]'
+  bordered
+/>
+
+## Operational interpretation
+
+<Columns>
+<Column title="Healthy signal">
+
+The API and ingestion services remain above the availability target, so the
+traffic increase can proceed from a capacity perspective.
+
+</Column>
+<Column title="Required follow-up">
+
+Assign a mitigation owner for the search latency incident and confirm the
+billing retry fix before the next regional rollout.
+
+</Column>
+</Columns>
+
+<PromptBox title="Standup prompt" text="Review open incidents, confirm an owner and next update time, then compare the latest P95 latency against the service target." />
+
+## Data contract being exercised
+
+- `$src` loads `data/operations.json` relative to this document.
+- `$derive` creates reusable table rows, filtered incidents, and a Chart.js config.
+- `from` injects each resolved value into the receiving component before rendering.
