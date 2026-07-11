@@ -1,6 +1,6 @@
 # P0 Refactor Plan
 
-Status: Phase 3 planned.
+Status: Phase 4 implementation complete, acceptance pending.
 
 This plan implements the P0 work in [BACKLOG.md](./BACKLOG.md). It protects
 accepted behavior while replacing the validation, package-delivery, and static
@@ -190,6 +190,8 @@ Acceptance:
 - The packed-package smoke test passes under Node 22 and Node 24.
 
 ### Phase 4: P0 Acceptance
+
+Status: implementation complete, acceptance pending.
 
 Goal: demonstrate that the refactor preserved its declared contract.
 
